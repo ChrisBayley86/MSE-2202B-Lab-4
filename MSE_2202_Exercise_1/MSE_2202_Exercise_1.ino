@@ -35,13 +35,15 @@ void loop() {
   int pin3 = 6;
   int pin4 = 7;
   
-  int steadyTime = millis();
+  long steadyTime = millis();
   int state = 1;
   int timeDifference = 100;
   
-  while (0 < 1) {
+  for (;0 < 1;) {
   
   if ((millis() - steadyTime) >= timeDifference){
+    
+    
     //Conditions for turning on
     if (state == 1 || state == 12) {
       digitalWrite(pin1, HIGH);
@@ -55,11 +57,13 @@ void loop() {
     if (state == 6) {
       digitalWrite(pin4, HIGH);
     }
+    
+    
     //Conditions for turning off
     if (state == 3 || state == 3) {
       digitalWrite(pin1, LOW);
     }
-    if (state == 5 || state == 1) {
+    if (state == 5 || state == 12) {
       digitalWrite(pin2, LOW);
     }
     if (state == 7 || state == 11) {
@@ -70,19 +74,28 @@ void loop() {
     }
     
     //Resetting the state
-    if (state == 12) {
-        state == 1;
+    if (state >= 12) {
+        state = 1;
     }
     else {
         state++;  
     }
     
+    /*if (state < 12) {
+      state++;
+    }
+    else {
+      state == 1;
+    }*/
+    
     //Resets the benchmark time
     steadyTime = millis();
+    
   }
   
   
-  Serial.write("State: ", state);
+  Serial.print("State: ");
+  Serial.println(state);
   }
 
 }

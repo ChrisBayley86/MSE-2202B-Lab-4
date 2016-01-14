@@ -3,10 +3,10 @@
 
 void setup() {
   //Declares the pins
-  int pin1 = D4;
-  int pin2 = D5;
-  int pin3 = D6;
-  int pin4 = D7;
+  int pin1 = 4;
+  int pin2 = 5;
+  int pin3 = 6;
+  int pin4 = 7;
   
   //Declares the benchmark time and the initial state
   int steadyTime = millis();
@@ -28,6 +28,22 @@ void setup() {
 }
 
 void loop() {
+  
+  //Declares the pins
+  int pin1 = 4;
+  int pin2 = 5;
+  int pin3 = 6;
+  int pin4 = 7;
+  
+  //Declares the benchmark time and the initial state
+  int steadyTime = millis();
+  int state = 1;
+  int timeDifference = 100;
+  
+  
+  for (; 0 < 1;){
+  
+  
   if ((millis() - steadyTime) >= timeDifference){
     //Conditions for turning on
     if (state == 2 || state == 13) {
@@ -58,13 +74,15 @@ void loop() {
     
     //Resetting the state
     if (state == 16) {
-        state == 1;
+        state = 1;
+    }
     else {
         state++;  
     }
     
     //Resets the benchmark time
     steadyTime = millis();
+  }
   }
 
 }
