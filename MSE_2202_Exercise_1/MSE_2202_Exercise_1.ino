@@ -2,10 +2,12 @@
 
 void setup() {
   //Declares the pins
-  int pin1 = D4;
-  int pin2 = D5;
-  int pin3 = D6;
-  int pin4 = D7;
+  int pin1 = 4;
+  int pin2 = 5;
+  int pin3 = 6;
+  int pin4 = 7;
+  
+  Serial.begin(9600);
   
   //Declares the benchmark time and the initial state
   int steadyTime = millis();
@@ -27,6 +29,18 @@ void setup() {
 }
 
 void loop() {
+  
+  int pin1 = 4;
+  int pin2 = 5;
+  int pin3 = 6;
+  int pin4 = 7;
+  
+  int steadyTime = millis();
+  int state = 1;
+  int timeDifference = 100;
+  
+  while (0 < 1) {
+  
   if ((millis() - steadyTime) >= timeDifference){
     //Conditions for turning on
     if (state == 1 || state == 12) {
@@ -45,7 +59,7 @@ void loop() {
     if (state == 3 || state == 3) {
       digitalWrite(pin1, LOW);
     }
-    if (state == 5 || state == 5) {
+    if (state == 5 || state == 1) {
       digitalWrite(pin2, LOW);
     }
     if (state == 7 || state == 11) {
@@ -56,14 +70,19 @@ void loop() {
     }
     
     //Resetting the state
-    if (state == 16) {
+    if (state == 12) {
         state == 1;
+    }
     else {
         state++;  
     }
     
     //Resets the benchmark time
     steadyTime = millis();
+  }
+  
+  
+  Serial.write("State: ", state);
   }
 
 }

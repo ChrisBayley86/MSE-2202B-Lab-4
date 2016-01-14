@@ -2,16 +2,22 @@
 
 void setup() {
   //Declares the pins
-  int pin1 = D4;
-  int pin2 = D5;
-  int pin3 = D6;
-  int pin4 = D7;
+  /*const int pin1 = D4;
+  const int pin2 = D5;
+  const int pin3 = D6;
+  const int pin4 = D7;*/
+  
+  const int pin1 = 4;
+  const int pin2 = 5;
+  const int pin3 = 6;
+  const int pin4 = 7;
+  
   
   //Declares some initial variables
-  int steadyTime = millis();
+  /*int steadyTime = millis();
   int state = 1;
   int timeDifference = 100;
-  int ledDuration = 3;
+  int ledDuration = 3;*/
   
   //Initializes the pin modes
   pinMode(pin1, OUTPUT);
@@ -32,13 +38,30 @@ void setup() {
   //Note: the first is set to 1 because
   //LED 1 starts the pattern one cycle
   //through it's duration.
-  int led1Count = 1;
+  /*int led1Count = 1;
   int led2Count = 0;
   int led3Count = 0;
-  int led4Count = 0; 
+  int led4Count = 0; */
 }
 
 void loop() {
+  
+  int steadyTime = millis();
+  int state = 1;
+  int timeDifference = 100;
+  int ledDuration = 3;
+  
+  const int pin1 = 4;
+  const int pin2 = 5;
+  const int pin3 = 6;
+  const int pin4 = 7;
+  
+  int led1Count = 1;
+  int led2Count = 0;
+  int led3Count = 0;
+  int led4Count = 0;
+  
+  while (0 < 1) {
   if ((millis() - steadyTime) >= timeDifference){
     //Conditions for turning on
     if (state == 1 || state == 12) {
@@ -75,6 +98,7 @@ void loop() {
     //Resetting or advancing
     if (state == 16) {
         state == 1;
+    }
     else {
         state++;  
     }
@@ -88,6 +112,7 @@ void loop() {
     
     //Resets the benchmark time
     steadyTime = millis();
+  }
   }
 
 }
