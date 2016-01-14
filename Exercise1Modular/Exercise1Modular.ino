@@ -26,6 +26,7 @@ void setup() {
 }
 
 void loop() {
+  const int ledLifeDuration = 2;
   int numPins = 4;
   int pins[numPins][3]; 
   //Zero-th row is pin locations
@@ -33,11 +34,11 @@ void loop() {
   //2nd row is pin life
   
   //Filling the pins array
-  for (int i = 0; i < numPins; i++){
+  for (int i = 0; i < numPins; i++){ //Begin for 1
     pins[i][0] = i+4; //Starts at pin 4;
     pins[i][1] = 0; //State defaults to 0 - low
     pins[i][2] = 0; //Life starts at 0 active counts
-  }
+  } //end for 1
   
   pins[0][2] = 1; //Pin 1 starts at life of 1 because it
   //is on at state 12
@@ -49,7 +50,22 @@ void loop() {
   int timeDifference = 250;
   int ledDuration = 3;
   
+  for (; state < 12; state++){ //begin for 2
+    if ((millis() - steadyTime) >= timeDifference){
+      for (int i = 0; i < numPins; i++){ //begin for 3
+        
+        //Resetting the LED life
+        if ( pins[i][2]) == ledLifeDuration ){
+          pins[i][2] = 0;
+        }
+        //Incrementing the pin life if it's currently
+        //turned on.
+        else if ( digitalRead(pins[i][0]) == 1 ){
+          pins[i][2] = pins[i][2]+1;
+        }
+        
+    
+      } //end for 3
+  } //end for 2
   
-  
-
 }
