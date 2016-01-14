@@ -44,11 +44,15 @@ void loop() {
     pins[i][1] = 0; //State defaults to 0 - low
     pins[i][2] = 0; //Life starts at 0 active counts
     pins[i][3] = 2*i;
-    pins[i][4] = (numPins*3)-2*i;
+    pins[i][4] = (numPins*3) - (2*i);
   } //end for 1
   
   pins[0][2] = 1; //Pin 1 starts at life of 1 because it
   //is turned back on at state 12
+  
+  /*for (int i = 0; i < numPins; i++){
+    Serial.write(i+1); Serial.write(
+  */
   
   
   //Declares some initial variables
@@ -57,7 +61,7 @@ void loop() {
   int timeDifference = 250;
   int ledDuration = 3;
   
-  for (int state = 0; state < numPins*3; state++){ //begin for 2
+  for (int state = 0; state < numPins*3;){ //begin for 2
     if ((millis() - steadyTime) >= timeDifference){ //begin if 1
       
       //Loop-checking of the i-th pin's state.
@@ -87,9 +91,11 @@ void loop() {
       if (state == (numPins*3 - 1)){ //begin if 5
         state = 0;
       } //end if 5
+      steadyTime = millis(); 
+      state++;
     } //end if 1
     
-    steadyTime = millis();    
+       
   } //end for 2
   
 }
