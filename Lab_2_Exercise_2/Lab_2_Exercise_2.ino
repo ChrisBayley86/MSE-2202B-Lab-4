@@ -110,6 +110,15 @@ void loop() {
       steadyTime = millis();
       Serial.print("State: ");
       Serial.println(state);
+      Serial.print("1: ");
+      Serial.println(digitalRead(pin1));
+      Serial.print(" 2: ");
+      Serial.println(digitalRead(pin2));
+      Serial.println(" 3: ");
+      Serial.print(digitalRead(pin3));
+      Serial.print(" 4: ");
+      Serial.println(digitalRead(pin4));
+      
     }
   }
 
