@@ -38,7 +38,7 @@ void loop() {
   //Declares some initial variables
   long steadyTime = millis();
   int state = 1;
-  int timeDifference = 250;
+  int timeDifference = 2000;
   int ledDuration = 3;
   
   //Sets a counter for each LED
@@ -129,7 +129,13 @@ void loop() {
       //Output to Serial monitor to check
       //the status of the input signal 
       //from the potentiometer.
-      
+      //Serial.println(analogRead(pot));
+      //timeDifference = analogRead(pot);
+      /*timeDifference += analogRead(pot);
+      timeDifference += analogRead(pot);
+      timeDifference += analogRead(pot);
+      //timeDifference += analogRead(pot);
+      timeDifference = timeDifference/4;*/
       
       
       //Resetting or advancing
@@ -141,6 +147,7 @@ void loop() {
       }
       
     }
+    timeDifference = analogRead(pot);
   }
 
 }
