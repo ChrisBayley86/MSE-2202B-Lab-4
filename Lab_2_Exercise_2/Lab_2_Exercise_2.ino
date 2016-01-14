@@ -38,7 +38,7 @@ void loop() {
   //Declares some initial variables
   long steadyTime = millis();
   int state = 1;
-  int timeDifference = 500;
+  int timeDifference = 250;
   int ledDuration = 3;
   
   //Sets a counter for each LED
@@ -91,6 +91,47 @@ void loop() {
     
     
     
+      
+    
+      //Incrementing the LED duration counters
+      if (digitalRead(pin1) == HIGH) led1Count++;
+      if (digitalRead(pin2) == HIGH) led2Count++;
+      if (digitalRead(pin3) == HIGH) led3Count++;
+      if (digitalRead(pin4) == HIGH) led4Count++;
+    
+    
+      //Resets the benchmark time
+      steadyTime = millis();
+      
+      //Output to Serial Monitor for debugging
+      //This was to resolve the state and
+      //life of each pin.
+      /*Serial.print("State: ");
+      Serial.println(state);
+      Serial.print("1: ");
+      Serial.print(digitalRead(pin1));
+      Serial.print(" Life: ");
+      Serial.println(led1Count);
+      Serial.print("2: ");
+      Serial.print(digitalRead(pin2));
+      Serial.print(" Life: ");
+      Serial.println(led2Count);
+      Serial.print("3: ");
+      Serial.print(digitalRead(pin3));
+      Serial.print(" Life: ");
+      Serial.println(led3Count);
+      Serial.print("4: ");
+      Serial.print(digitalRead(pin4));
+      Serial.print(" Life: ");
+      Serial.println(led4Count);
+      Serial.println();*/
+      
+      //Output to Serial monitor to check
+      //the status of the input signal 
+      //from the potentiometer.
+      
+      
+      
       //Resetting or advancing
       if (state == 12) {
           state = 1;
@@ -98,26 +139,6 @@ void loop() {
       else {
         state++;  
       }
-    
-      //Incrementing the LED duration counters
-      if (digitalRead(pin1) == HIGH) led1Count++;
-      if (digitalRead(pin2) == HIGH) led2Count++;
-      if (digitalRead(pin2) == HIGH) led3Count++;
-      if (digitalRead(pin2) == HIGH) led4Count++;
-    
-    
-      //Resets the benchmark time
-      steadyTime = millis();
-      Serial.print("State: ");
-      Serial.println(state);
-      Serial.print("1: ");
-      Serial.println(digitalRead(pin1));
-      Serial.print(" 2: ");
-      Serial.println(digitalRead(pin2));
-      Serial.println(" 3: ");
-      Serial.print(digitalRead(pin3));
-      Serial.print(" 4: ");
-      Serial.println(digitalRead(pin4));
       
     }
   }
