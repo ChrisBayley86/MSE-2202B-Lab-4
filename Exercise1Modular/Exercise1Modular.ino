@@ -42,12 +42,6 @@ void loop() {
   pins[0][2] = 1; //Pin 1 starts at life of 1 because it
   //is on at state 12
   
-  /*
-  //Declares the pins
-  const int pin1 = 4;
-  const int pin2 = 5;
-  const int pin3 = 6;
-  const int pin4 = 7;*/
   
   //Declares some initial variables
   long steadyTime = millis();
@@ -55,18 +49,6 @@ void loop() {
   int timeDifference = 250;
   int ledDuration = 3;
   
-  /*
-  //Sets a counter for each LED
-  //so that it can be modified based
-  //on the lifespan of it's duration
-  //Note: the first is set to 1 because
-  //LED 1 starts the pattern one cycle
-  //through it's duration.
-  int led1Count = 1;
-  int led2Count = 0;
-  int led3Count = 0;
-  int led4Count = 0; 
-  */
   
   
 
