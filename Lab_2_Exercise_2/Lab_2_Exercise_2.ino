@@ -36,7 +36,7 @@ void loop() {
   const int pot = A0;
   
   //Declares some initial variables
-  int steadyTime = millis();
+  long steadyTime = millis();
   int state = 1;
   int timeDifference = 500;
   int ledDuration = 3;
