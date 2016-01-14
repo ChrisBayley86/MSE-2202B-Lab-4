@@ -58,38 +58,38 @@ void loop() {
   int ledDuration = 3;
   
   for (int state = 0; state < numPins*3; state++){ //begin for 2
-    if ((millis() - steadyTime) >= timeDifference){
+    if ((millis() - steadyTime) >= timeDifference){ //begin if 1
       
       //Loop-checking of the i-th pin's state.
       for (int i = 0; i < numPins; i++){ //begin for 4
         
-        if ( state == pins[i][3] || state == pins[i][4] ){
+        if ( (state == pins[i][3]) || (state == pins[i][4]) ){ //begin if 2
           digitalWrite(pins[i][0],HIGH);
-        }
+        } // end if 2
         
         
         //Resetting the LED life
-        if ( pins[i][2] == ledLifeDuration ){
+        if ( pins[i][2] == ledLifeDuration ){ //begin if 3
           digitalWrite(pins[i][0], LOW);
           pins[i][2] = 0;
-        }
+        } //end if 3
         //Incrementing the pin life if it's currently
         //turned on.
-        else if ( digitalRead(pins[i][0]) == 1 ){
+        else if ( digitalRead(pins[i][0]) == HIGH ){ //begin if 4
           pins[i][2] = pins[i][2]+1;
-        }
+        } //end if 4
         
     
       } //end for 4
       
       
       //Reset the state counter
-      if (state == (numPins*3 - 1)){
+      if (state == (numPins*3 - 1)){ //begin if 5
         state = 0;
-      }
-    }
+      } //end if 5
+    } //end if 1
     
-    steadyTime = millis()    
+    steadyTime = millis();    
   } //end for 2
   
 }
