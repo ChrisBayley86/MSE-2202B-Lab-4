@@ -26,12 +26,28 @@ void setup() {
 }
 
 void loop() {
+  int numPins = 4;
+  int pins[numPins][3]; 
+  //Zero-th row is pin locations
+  //1st row is pin state
+  //2nd row is pin life
   
+  //Filling the pins array
+  for (int i = 0; i < numPins; i++){
+    pins[i][0] = i+4; //Starts at pin 4;
+    pins[i][1] = 0; //State defaults to 0 - low
+    pins[i][2] = 0; //Life starts at 0 active counts
+  }
+  
+  pins[0][2] = 1; //Pin 1 starts at life of 1 because it
+  //is on at state 12
+  
+  /*
   //Declares the pins
   const int pin1 = 4;
   const int pin2 = 5;
   const int pin3 = 6;
-  const int pin4 = 7;
+  const int pin4 = 7;*/
   
   //Declares some initial variables
   long steadyTime = millis();
@@ -39,6 +55,7 @@ void loop() {
   int timeDifference = 250;
   int ledDuration = 3;
   
+  /*
   //Sets a counter for each LED
   //so that it can be modified based
   //on the lifespan of it's duration
@@ -49,91 +66,8 @@ void loop() {
   int led2Count = 0;
   int led3Count = 0;
   int led4Count = 0; 
+  */
   
   
-  for (; 0 < 1;) {
-    if ((millis() - steadyTime) >= timeDifference){
-      //Conditions for turning on
-      if (state == 1 || state == 12) {
-        digitalWrite(pin1, HIGH);
-      }
-      if (state == 2 || state == 10) {
-        digitalWrite(pin2, HIGH);
-      }
-      if (state == 4 || state == 8) {
-        digitalWrite(pin3, HIGH); 
-      }
-      if (state == 6) {
-        digitalWrite(pin4, HIGH);
-      }
-    
-      //This will allow the lights to turn
-      //off when they're count has hit
-      //the maximum duration.
-      if (led1Count == ledDuration) {
-        digitalWrite(pin1, LOW);
-        led1Count = 0;
-      }
-      if (led2Count == ledDuration) {
-        digitalWrite(pin2, LOW);
-        led2Count = 0;
-      }
-      if (led3Count == ledDuration) {
-        digitalWrite(pin3, LOW);
-        led3Count = 0;
-      }
-      if (led4Count == ledDuration) {
-        digitalWrite(pin4, LOW);
-        led4Count = 0;
-      }
-    
-    
-    
-      
-    
-      //Incrementing the LED duration counters
-      if (digitalRead(pin1) == HIGH) led1Count++;
-      if (digitalRead(pin2) == HIGH) led2Count++;
-      if (digitalRead(pin3) == HIGH) led3Count++;
-      if (digitalRead(pin4) == HIGH) led4Count++;
-    
-    
-      //Resets the benchmark time
-      steadyTime = millis();
-      
-      //Output to Serial Monitor for debugging
-      //This was to resolve the state and
-      //life of each pin.
-      /*Serial.print("State: ");
-      Serial.println(state);
-      Serial.print("1: ");
-      Serial.print(digitalRead(pin1));
-      Serial.print(" Life: ");
-      Serial.println(led1Count);
-      Serial.print("2: ");
-      Serial.print(digitalRead(pin2));
-      Serial.print(" Life: ");
-      Serial.println(led2Count);
-      Serial.print("3: ");
-      Serial.print(digitalRead(pin3));
-      Serial.print(" Life: ");
-      Serial.println(led3Count);
-      Serial.print("4: ");
-      Serial.print(digitalRead(pin4));
-      Serial.print(" Life: ");
-      Serial.println(led4Count);
-      Serial.println();*/
-      
-      
-      //Resetting or advancing
-      if (state == 12) {
-          state = 1;
-      }
-      else {
-        state++;  
-      }
-      
-    }
-  }
 
 }
