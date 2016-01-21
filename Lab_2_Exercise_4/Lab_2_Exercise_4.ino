@@ -133,12 +133,14 @@ const int ledLifeDuration = 2;
       
       
       //Reset the state counter
-      if (state == (numPins*3 /*- 1*/)){ //begin if 5
+      if (state == (numPins*3)){ //begin if 5
         state = 0;
       } //end if 5
       steadyTime = millis(); 
       state++;
     } //end if 1
+    
+    
    Serial.print("B: ");
    Serial.println(digitalRead(button));
    Serial.print("S: ");
