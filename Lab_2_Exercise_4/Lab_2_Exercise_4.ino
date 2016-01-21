@@ -21,7 +21,7 @@ void setup() {
   pinMode(pin3, OUTPUT);
   pinMode(pin4, OUTPUT);
   pinMode(pot, INPUT);
-  pinMode(button, INPUT);
+  pinMode(button, INPUT_PULLUP);
   pinMode(dpdtSwitch, INPUT);
   
   //Sets all LED pins to low
@@ -30,7 +30,8 @@ void setup() {
   digitalWrite(pin2, LOW);
   digitalWrite(pin3, LOW);
   digitalWrite(pin4, LOW);
-  digitalWrite(button, HIGH); 
+  //digitalWrite(button, HIGH);
+  //digitalWrite(dpdtSwitch, HIGH);
   //the above line enables the internal
   //pull-up resistor.
   
@@ -38,9 +39,9 @@ void setup() {
 
 void loop () {
   
-  
-  
-const int ledLifeDuration = 2;
+ 
+  //Setting up the pins array
+  const int ledLifeDuration = 2;
   int numPins = 4;
   int pins[numPins][5]; 
   //Zero-th row is pin locations
@@ -71,9 +72,12 @@ const int ledLifeDuration = 2;
   
   //Declares some initial variables
   long steadyTime = millis();
+  long tempTime = 0;
   //int state = 0;
   int timeDifference = 200;
   int ledDuration = 3;
+  int stateLock = 0; //0 = OPEN, 1 = LOCKED
+  int increment = 5; //How much the tempTime increments by.
   
   //Potentiometer pin setup
   const int pot = A0;
@@ -140,21 +144,40 @@ const int ledLifeDuration = 2;
       state++;
     } //end if 1
     
-    
+   /* 
    Serial.print("B: ");
    Serial.println(digitalRead(button));
    Serial.print("S: ");
    Serial.println(digitalRead(dpdtSwitch));
+   */
    
    //Changes the method of setting the timeDifference
-   if (digitalRead(dpdtSwitch) == HIGH){ //begin if 6
+   if ( (digitalRead(dpdtSwitch) == LOW) /*&& (stateLock == 0)*/ && (digitalRead(button) == LOW) ) {
+     //stateLock = 1;
+     tempTime += increment;
+     timeDifference = tempTime; 
+     //timeDifference += 30;
+     Serial.print("INCREMENT ");
+     Serial.println(timeDifference);
+   }
+   else if ( (digitalRead(dpdtSwitch) == LOW) /*&& (stateLock == 1)*/ && (digitalRead(button) == HIGH) ) {
+     //stateLock = 0;
+     tempTime = 0;
+     Serial.print("RELEASE ");
+     Serial.println(timeDifference);
+   }
+   else if ( (digitalRead(dpdtSwitch) == HIGH) && (stateLock == 0) ) {
      timeDifference = analogRead(pot);
    }
-   else if (digitalRead(dpdtSwitch) == LOW && digitalRead(button) == LOW) {
+   /*
+   if (digitalRead(dpdtSwitch) == LOW){ //begin if 6
+     timeDifference = analogRead(pot);
+   }
+   else if (digitalRead(dpdtSwitch) == HIGH && digitalRead(button) == HIGH) {
      timeDifference += 5;//digitalRead(button);
      
    }
-   
+   */
    
    
    
