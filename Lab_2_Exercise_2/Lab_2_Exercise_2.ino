@@ -38,7 +38,7 @@ void loop() {
   //Declares some initial variables
   long steadyTime = millis();
   int state = 1;
-  int timeDifference = 2000;
+  int timeDifference = 100;
   int ledDuration = 3;
   
   //Sets a counter for each LED
@@ -147,7 +147,7 @@ void loop() {
       }
       
     }
-    timeDifference = analogRead(pot);
+    //timeDifference = analogRead(pot);
   }
 
 }

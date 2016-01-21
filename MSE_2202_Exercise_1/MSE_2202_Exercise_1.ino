@@ -12,7 +12,7 @@ void setup() {
   //Declares the benchmark time and the initial state
   int steadyTime = millis();
   int state = 1;
-  int timeDifference = 100;
+  int timeDifference = 500;
   
   //Initializes the pin modes
   pinMode(pin1, OUTPUT);
@@ -37,7 +37,7 @@ void loop() {
   
   long steadyTime = millis();
   int state = 1;
-  int timeDifference = 100;
+  int timeDifference = 500;
   
   for (;0 < 1;) {
   

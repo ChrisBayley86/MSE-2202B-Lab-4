@@ -43,37 +43,39 @@ void loop() {
     //can handle i number of pins...
     pins[i][1] = 0; //State defaults to 0 - low
     pins[i][2] = 0; //Life starts at 0 active counts
-    pins[i][3] = 2*i;
-    pins[i][4] = (numPins*3) - (2*i);
+    pins[i][3] = 2*i; //state to turn on (1)
+    pins[i][4] = (numPins*3) - (2*i); //state to turn on (2)
   } //end for 1
   
   pins[0][2] = 1; //Pin 1 starts at life of 1 because it
   //is turned back on at state 12
   
-  /*for (int i = 0; i < numPins; i++){
-    Serial.write(i+1); Serial.write(
-  */
-  
   
   //Declares some initial variables
   long steadyTime = millis();
   //int state = 0;
-  int timeDifference = 250;
+  int timeDifference = 200;
   int ledDuration = 3;
   
-  for (int state = 0; state < numPins*3;){ //begin for 2
+  for (int state = 0; state <= numPins*3;){ //begin for 2
     if ((millis() - steadyTime) >= timeDifference){ //begin if 1
       
+      Serial.print("State: ");
+      Serial.println(state);
+      
       //Loop-checking of the i-th pin's state.
-      for (int i = 0; i < numPins; i++){ //begin for 4
+      for (int i = 0; i <= numPins; i++){ //begin for 4
         
         if ( (state == pins[i][3]) || (state == pins[i][4]) ){ //begin if 2
           digitalWrite(pins[i][0],HIGH);
+          Serial.println();
+          Serial.println(state);
+          Serial.println();
         } // end if 2
         
         
         //Resetting the LED life
-        if ( pins[i][2] == ledLifeDuration ){ //begin if 3
+        if ( pins[i][2] > ledLifeDuration ){ //begin if 3
           digitalWrite(pins[i][0], LOW);
           pins[i][2] = 0;
         } //end if 3
@@ -83,12 +85,20 @@ void loop() {
           pins[i][2] = pins[i][2]+1;
         } //end if 4
         
+       
+      Serial.print(i);
+      Serial.print(": ");
+      Serial.print(digitalRead(pins[i][0]));
+      Serial.print(" Life: ");
+      Serial.println(pins[i][2]);
+        
+        
     
       } //end for 4
       
       
       //Reset the state counter
-      if (state == (numPins*3 - 1)){ //begin if 5
+      if (state == (numPins*3 /*- 1*/)){ //begin if 5
         state = 0;
       } //end if 5
       steadyTime = millis(); 
