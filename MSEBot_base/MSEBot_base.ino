@@ -29,12 +29,13 @@ I2CEncoder encoder_LeftMotor;
 
 #define DEBUG_MODE_DISPLAY
 #define DEBUG_MOTORS
-#define DEBUG_LINE_TRACKERS
+//#define DEBUG_LINE_TRACKERS
 #define DEBUG_ENCODERS
 #define DEBUG_ULTRASONIC
 #define DEBUG_LINE_TRACKER_CALIBRATION
 #define DEBUG_MOTOR_CALIBRATION
-#define DEBUG_CASE
+//#define DEBUG_CASE
+#define LINE_TRACKING_CASES
 
 boolean bt_Motors_Enabled = true;
 
@@ -309,27 +310,47 @@ void loop()
 
             //If MIDDLE
             if ( (ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)) || ((ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-           && ((ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)) 
-           || (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) ) ) {
+                 && ((ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
+                     || (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) ) ) {
+
+#ifdef LINE_TRACKING_CASES
+              Serial.println("M");
+#endif
+
               servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
               servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
             }
             //If Left !Middle
-            if ((ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)) 
+            if ((ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
                 && !(ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) {
+
+#ifdef LINE_TRACKING_CASES
+              Serial.println("L !M");
+#endif
+
               servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
               servo_RightMotor.writeMicroseconds(1500);
             }
             //If Right !Middle
             else if (!(ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
                      && (ui_Right_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) {
+
+#ifdef LINE_TRACKING_CASES
+              Serial.println("R !M");
+#endif
+
               servo_LeftMotor.writeMicroseconds(1500);
               servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
             }
           }
           else if ( (bt_Motors_Enabled) && !(( ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-                                             && ( ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)) && (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)))) {
-            servo_LeftMotor.writeMicroseconds(1300);
+                                             && ( ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
+                                             && (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)))) {
+
+#ifdef LINE_TRACKING_CASES
+            Serial.println("Nothing");
+#endif
+            servo_LeftMotor.writeMicroseconds(1100);
             servo_RightMotor.writeMicroseconds(1700);
           }
 
