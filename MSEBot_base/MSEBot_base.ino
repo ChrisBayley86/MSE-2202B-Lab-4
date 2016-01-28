@@ -317,14 +317,14 @@ void loop()
             //If Left !Middle
             if ((ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)) 
                 && !(ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) {
-              servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed - 150);
-              servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed - 50 );
+              servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+              servo_RightMotor.writeMicroseconds(1500);
             }
             //If Right !Middle
             else if (!(ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
                      && (ui_Right_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) {
-              servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed - 50);
-              servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed - 100);
+              servo_LeftMotor.writeMicroseconds(1500);
+              servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
             }
           }
           else if ( (bt_Motors_Enabled) && !(( ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
