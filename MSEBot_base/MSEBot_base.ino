@@ -303,82 +303,106 @@ void loop()
             possibly encoder counts.
           /*************************************************************************************/
 
+          /**************************************************************************************
+                                    Outline of logic for line tracking
 
-          if ( (bt_Motors_Enabled) && ( (ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-                                        || (ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-                                        || (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) ) {
+          Method 1: Reading the sensors
+          Variables: Sensors (L,M,R), currentCondition, pastCondition
 
-            
-                                          
-            //If Left Middle
-            if ((ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-                && (ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) {
+          if (motors enabled){
+            pastCondition = currentCondition;
+
+            //If none
+            if ( !(L&&M&&R) ) { *Don't spin (L/R) yet, output ("Nothing"), currentCondition = nothing(0)
+              if (pastCondition == L(1) { turn L }
+              else if (pastCondition == R(2) { turn R }
+              else (i.e. M or N) { spin (L/R) }
+
+
+            }
+            //If something
+            else if ( L || M || R ) { drive forward
+              if (L) { currentCondition = L(1) }
+              else if (M) { currentCondition = M(2) }
+              else if (R) { currentCondition = R(3) }
+            }
+
+          }
+          **************************************************************************************/
+
+          if (bt_Motors_Enabled) {
+            pastCondition = currentCondition;
+
+            //If none
+            if ( !(
+                   (ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
+                   && (ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
+                   && (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
+                 ) ) {
 
 #ifdef LINE_TRACKING_CASES
-              Serial.println("L & M");
+              Serial.println("Nothing");
 #endif
+              currentCondition = 0;
 
+              if (pastCondition == 1 {
+              //Turn L
+              servo_LeftMotor.writeMicroseconds(1500);
+                servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+#ifdef LINE_TRACKING_CASES
+                Serial.println("Turn Left");
+#endif
+              }
+              else if (pastCondition == 3 {
+              //Turn R
               servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
-              servo_RightMotor.writeMicroseconds(1500);
+                servo_RightMotor.writeMicroseconds(1500);
+#ifdef LINE_TRACKING_CASES
+                Serial.println("Turn Right");
+#endif
+              }
+              else {
+                //Spin L
+                servo_LeftMotor.writeMicroseconds(1300);
+                servo_RightMotor.writeMicroseconds(1700);
+              }
             }
-            //If Left !Middle
+            //If something (either L, M or R)
             else if ((ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-                && !(ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) {
-
-#ifdef LINE_TRACKING_CASES
-              Serial.println("L !M");
-#endif
-
-              servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
-              servo_RightMotor.writeMicroseconds(1500);
-            }
-            //If Right !Middle
-            else if (!(ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-                     && (ui_Right_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) {
-
-#ifdef LINE_TRACKING_CASES
-              Serial.println("R !M");
-#endif
-
-              servo_LeftMotor.writeMicroseconds(1500);
-              servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-            }
-            //If Right & Middle
-            else if ((ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-                     && (ui_Right_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) {
-
-#ifdef LINE_TRACKING_CASES
-              Serial.println("R &M");
-#endif
-
-              servo_LeftMotor.writeMicroseconds(1500);
-              servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-            }
-            //If MIDDLE
-           else if ( (ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)) || ((ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-                 && ((ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-                     || (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) ) ) {
-
-#ifdef LINE_TRACKING_CASES
-              Serial.println("M");
-#endif
-
+                     || (ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
+                     || (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))) {
               servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
               servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+              //If L
+              if (ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)) {
+                currentCondition = 1;
+#ifdef LINE_TRACKING_CASES
+                Serial.println("Left");
+#endif
+              }
+              //If M
+              else if (ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)) {
+                currentCondition = 2;
+#ifdef LINE_TRACKING_CASES
+                Serial.println("Middle");
+#endif
+              }
+              //If R
+              else if (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)) {
+                currentCondition = 3;
+#ifdef LINE_TRACKING_CASES
+                Serial.println("Right");
+#endif
+              }
             }
 
           }
-          else if ( (bt_Motors_Enabled) && !(( ui_Left_Line_Tracker_Data < (ui_Left_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-                                             && ( ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance))
-                                             && (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance)))) {
 
-#ifdef LINE_TRACKING_CASES
-            Serial.println("Nothing");
-#endif
-            servo_LeftMotor.writeMicroseconds(1100);
-            servo_RightMotor.writeMicroseconds(1700);
-          }
-          
+
+
+
+
+
 
           /*if (bt_Motors_Enabled)
           {
