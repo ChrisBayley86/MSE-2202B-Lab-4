@@ -288,7 +288,7 @@ void loop()
         */
         
         left_Encoder_Position = encoder_LeftMotor.getRawPosition();
-        left_Encoder_Position = encoder_RightMotor.getRawPosition();
+        right_Encoder_Position = encoder_RightMotor.getRawPosition();
         
         
         Serial.print("Encoders L: ");
