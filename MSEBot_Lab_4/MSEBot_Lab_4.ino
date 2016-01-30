@@ -30,7 +30,7 @@ I2CEncoder encoder_LeftMotor;
 #define DEBUG_MODE_DISPLAY
 //#define DEBUG_MOTORS
 //#define DEBUG_LINE_TRACKERS
-//#define DEBUG_ENCODERS
+#define DEBUG_ENCODERS
 //#define DEBUG_ULTRASONIC
 //#define DEBUG_LINE_TRACKER_CALIBRATION
 //#define DEBUG_MOTOR_CALIBRATION
@@ -254,6 +254,9 @@ void loop()
   Serial.println(ui_Robot_State_Index);
 #endif
 
+  int left_Encoder_Position;
+  int right_Encoder_Position;
+
 
   // modes
   // 0 = default after power up/reset
@@ -271,9 +274,31 @@ void loop()
         servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
         servo_ArmMotor.write(ci_Arm_Servo_Retracted);
         servo_GripMotor.write(ci_Grip_Motor_Closed);
-        encoder_LeftMotor.zero();
-        encoder_RightMotor.zero();
+        //encoder_LeftMotor.zero();
+        //encoder_RightMotor.zero();
         ui_Mode_Indicator_Index = 0;
+
+#ifdef DEBUG_ENCODERS
+        l_Left_Motor_Position = encoder_LeftMotor.getRawPosition();
+        l_Right_Motor_Position = encoder_RightMotor.getRawPosition();
+
+        /*
+        left_Encoder_Position += l_Left_Motor_Position;
+        left_Encoder_Position += l_Right_Motor_Position;
+        */
+        
+        left_Encoder_Position = encoder_LeftMotor.getRawPosition();
+        left_Encoder_Position = encoder_RightMotor.getRawPosition();
+        
+        
+        Serial.print("Encoders L: ");
+        Serial.print(left_Encoder_Position);
+        Serial.print(", R: ");
+        Serial.println(right_Encoder_Position);
+
+
+#endif
+
         break;
       }
 
@@ -297,10 +322,13 @@ void loop()
           l_Left_Motor_Position = encoder_LeftMotor.getRawPosition();
           l_Right_Motor_Position = encoder_RightMotor.getRawPosition();
 
+
           Serial.print("Encoders L: ");
           Serial.print(l_Left_Motor_Position);
           Serial.print(", R: ");
           Serial.println(l_Right_Motor_Position);
+
+
 #endif
 
           // set motor speeds
