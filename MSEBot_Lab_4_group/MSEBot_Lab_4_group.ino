@@ -388,14 +388,12 @@ void loop()
             encoder_LeftMotor.zero();
             encoder_RightMotor.zero();
 
-            if (turnLeftAtFirstStop == true) {
-              servo_LeftMotor.write(1250);
-              servo_RightMotor.write(1650);
+            while (ui_Right_On_Yellow) {
+              servo_RightMotor.write(1800);
             }
-            else {
-              servo_LeftMotor.write(1650);
-              servo_RightMotor.write(1350);
-            }
+            
+            
+            trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
 
             Serial.println(encoder_LeftMotor.getRawPosition());
             Serial.println(encoder_RightMotor.getRawPosition());
@@ -415,16 +413,6 @@ void loop()
               trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
             }
 
-
-            /*
-            //Check status and drive forward until 3 cm from the box
-            Ping();
-            while ((ul_Echo_Time / 58) > 5) {
-              servo_LeftMotor.write(ui_Left_Motor_Speed);
-              servo_RightMotor.write(ui_Right_Motor_Speed);
-              Ping();
-            }
-            */
           }
           else if (operationPhase == 4) {
             //Scan for the pedestal
