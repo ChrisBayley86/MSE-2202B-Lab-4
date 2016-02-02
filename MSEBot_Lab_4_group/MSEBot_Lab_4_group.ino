@@ -360,7 +360,8 @@ void loop()
           *****************************************/
 
 
-
+          Serial.print("OP ");
+          Serial.println(operationPhase);
 
           if (operationPhase == 1) {
 
@@ -376,7 +377,10 @@ void loop()
               activatedOnce = true;
             }
 
-            if ((activatedOnce == true) && (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
+            Serial.print("TLAFS: ");
+            Serial.println(turnLeftAtFirstStop);
+
+            if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
               operationPhase++;
             }
 
