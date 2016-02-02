@@ -382,18 +382,23 @@ void loop()
 
           }
           else if (operationPhase == 2) {
-            while (!(ui_Middle_On_Yellow)) {
-              if (turnLeftAtFirstStop == true) {
-                servo_LeftMotor.write(1350);
-                servo_LeftMotor.write(1650);
-              }
-              else {
-                servo_LeftMotor.write(1650);
-                servo_LeftMotor.write(1350);
-              }
+
+            if (turnLeftAtFirstStop == true) {
+              servo_LeftMotor.write(1350);
+              servo_LeftMotor.write(1650);
+            }
+            else {
+              servo_LeftMotor.write(1650);
+              servo_LeftMotor.write(1350);
             }
 
-            servo_ArmMotor.write(ci_Arm_Servo_Extended); //30 is retracted, Full extension is 150, 
+            if ((ui_Middle_On_Yellow) && !(ui_Left_On_Yellow || ui_Right_On_Yellow)) {
+              servo_LeftMotor.write(1500);
+              servo_LeftMotor.write(1500);
+            }
+
+
+            servo_ArmMotor.write(ci_Arm_Servo_Extended); //30 is retracted, Full extension is 150,
             servo_GripMotor.write(ci_Grip_Motor_Open); //Closed is 15, Open is 140
             operationPhase++;
           }
@@ -422,12 +427,12 @@ void loop()
               servo_RightMotor.write(ui_Right_Motor_Speed);
               Ping();
             }
-            
+
             //Pulls back the arm
-            servo_ArmMotor.write((ci_Arm_Servo_Retracted + ci_Arm_Servo_Retracted)/2); 
-            
+            servo_ArmMotor.write((ci_Arm_Servo_Retracted + ci_Arm_Servo_Retracted) / 2);
+
             Serial.println(analogRead(ci_Light_Sensor));
-            
+
             /*previousTime = millis();
             while (analogRead(ci_Light_Sensor) > 40){
               if (millis()
@@ -436,25 +441,25 @@ void loop()
             servo_RightMotor.write(2400);
 
 
-        }
+          }
 
 
 
-        /*
-                    if (bt_Motors_Enabled)
-                    {
-                      servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
-                      servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-                    }
-                    else
-                    {
-                      servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-                      servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-                    }
-        */
+          /*
+                      if (bt_Motors_Enabled)
+                      {
+                        servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+                        servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+                      }
+                      else
+                      {
+                        servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
+                        servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
+                      }
+          */
 
 #ifdef DEBUG_MOTORS
-        Serial.print("Motors enabled: ");
+          Serial.print("Motors enabled: ");
           Serial.print(bt_Motors_Enabled);
           Serial.print(", Default: ");
           Serial.print(ui_Motors_Speed);
