@@ -24,10 +24,10 @@ I2CEncoder encoder_LeftMotor;
 
 // Uncomment keywords to enable debugging output
 
-#define DEBUG_MODE_DISPLAY
+//#define DEBUG_MODE_DISPLAY
 //#define DEBUG_MOTORS
 //#define DEBUG_LINE_TRACKERS
-#define DEBUG_ENCODERS
+//#define DEBUG_ENCODERS
 //#define DEBUG_ULTRASONIC
 //#define DEBUG_LINE_TRACKER_CALIBRATION
 //#define DEBUG_MOTOR_CALIBRATION
@@ -126,7 +126,7 @@ unsigned int ui_Right_Line_Tracker_Light;
 unsigned int ui_Line_Tracker_Tolerance;
 unsigned int firsttime = 1;
 unsigned int firstencoderread;
-unsigned int operationPhase = 0;
+unsigned int operationPhase = 1;
 
 bool turnLeftAtFirstStop = false;
 bool activatedOnce = false;
@@ -428,10 +428,12 @@ void loop()
             
             Serial.println(analogRead(ci_Light_Sensor));
             
-            //previousTime = millis();
-            /*while (analogRead(ci_Light_Sensor)){
-              
+            /*previousTime = millis();
+            while (analogRead(ci_Light_Sensor) > 40){
+              if (millis()
             }*/
+            servo_LeftMotor.write(2400);
+            servo_RightMotor.write(2400);
 
 
         }
