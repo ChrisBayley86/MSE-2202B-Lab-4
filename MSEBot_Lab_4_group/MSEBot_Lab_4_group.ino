@@ -342,26 +342,36 @@ void loop()
           ui_Middle_On_Yellow = (ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance));
           ui_Right_On_Yellow = (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance));
 
-          trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
+          
 
           if (operationPhase == 1) {
+            
+            trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
+            
             if (((millis() - previousTimeMeasurement) >= 1500) && (activatedOnce == false)) {
               if (servo_LeftMotor.getRawPosition() >= servo_RightMotor.getRawPosition()) {
-                turnLeftAtFirstStop = true;
+                turnLeftAtFirstStop = false;
               }
               else {
-                turnLeftAtFirstStop = false;
+                turnLeftAtFirstStop = true;
               }
               activatedOnce = true;
             }
             
-            if ((activatedOnce = true) && (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
-              
+            if ((activatedOnce == true) && (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
+              operationPhase++;
             }
-
 
           }
           else if (operationPhase == 2) {
+            if (turnLeftAtFirstStop == true) {
+              servo_LeftMotor.write(1350);
+              servo_LeftMotor.write(1650);
+            }
+            else {
+              servo_LeftMotor.write(1650);
+              servo_LeftMotor.write(1350);
+            }
 
           }
 
