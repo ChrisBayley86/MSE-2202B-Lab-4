@@ -314,6 +314,8 @@ void loop()
         unsigned int ui_Left_On_Yellow;
         unsigned int ui_Middle_On_Yellow;
         unsigned int ui_Right_On_Yellow;
+        
+        unsigned int ui_timesAtAllThree;
 
 
 
@@ -379,14 +381,32 @@ void loop()
 
             Serial.print("TLAFS: ");
             Serial.println(turnLeftAtFirstStop);
+            Serial.print("Left Encoder: ");
+            Serial.print(encoder_LeftMotor.getRawPosition());
+            Serial.print("Right Encoder: ");
+            Serial.print(encoder_RightMotor.getRawPosition());
+            
+            
+            
+            if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
+              ui_timesAtAllThree++;
+            }
 
-            if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
+            if (ui_timesAtAllThree >= 7) {
               operationPhase++;
             }
+            /*
+            if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
+              operationPhase++;
+              previousTimeMeasurement = millis();
+            }*/
 
           }
           else if (operationPhase == 2) {
 
+            encoder_LeftMotor.zero();
+            
+            
             if (turnLeftAtFirstStop == true) {
               servo_LeftMotor.write(1350);
               servo_LeftMotor.write(1650);
@@ -396,7 +416,7 @@ void loop()
               servo_LeftMotor.write(1350);
             }
 
-            if ((ui_Middle_On_Yellow) && !(ui_Left_On_Yellow || ui_Right_On_Yellow)) {
+            if ((encoder_LeftMotor.getRawPosition()) >= 750) {
               servo_LeftMotor.write(1500);
               servo_LeftMotor.write(1500);
             }
@@ -783,7 +803,7 @@ void trackLine(unsigned int ui_Left_On_Yellow, unsigned int ui_Middle_On_Yellow,
       //If R
       else if (ui_Right_On_Yellow) {
         Serial.println("Right");
-        servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed + 400);
+        servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed + 100);
         servo_RightMotor.writeMicroseconds(1300);
         //return 2;
       }
