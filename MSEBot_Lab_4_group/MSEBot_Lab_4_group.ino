@@ -86,9 +86,9 @@ const int ci_Right_Motor_Offset_Address_H = 15;
 const int ci_Left_Motor_Stop = 1500;        // 200 for brake mode; 1500 for stop
 const int ci_Right_Motor_Stop = 1500;
 const int ci_Grip_Motor_Open = 140;         // Experiment to determine appropriate value
-const int ci_Grip_Motor_Closed = 90;        //  "
-const int ci_Arm_Servo_Retracted = 55;      //  "
-const int ci_Arm_Servo_Extended = 120;      //  "
+const int ci_Grip_Motor_Closed = 15;        //  "
+const int ci_Arm_Servo_Retracted = 30;      //  "
+const int ci_Arm_Servo_Extended = 150;      //  "
 const int ci_Display_Time = 500;
 const int ci_Line_Tracker_Calibration_Interval = 100;
 const int ci_Line_Tracker_Cal_Measures = 20;
@@ -393,8 +393,8 @@ void loop()
               }
             }
 
-            //Grip open code
-            //Arm extension code
+            servo_ArmMotor.write(ci_Arm_Servo_Extended); //30 is retracted, Full extension is 150, 
+            servo_GripMotor.write(ci_Grip_Motor_Open); //Closed is 15, Open is 140
             operationPhase++;
           }
           else if (operationPhase == 3) {
@@ -405,7 +405,8 @@ void loop()
 
             /*
             //Check status and drive forward until 3 cm from the box
-            while ((ul_Echo_Time / 58) > 3) {
+            Ping();
+            while ((ul_Echo_Time / 58) > 5) {
               servo_LeftMotor.write(ui_Left_Motor_Speed);
               servo_RightMotor.write(ui_Right_Motor_Speed);
               Ping();
@@ -413,10 +414,18 @@ void loop()
             */
           }
           else if (operationPhase == 4) {
-            //Scan for the flag (light)
-            while /**/ {
-
-          }
+            //Scan for the pedestal
+            //Check status and drive forward until 5 cm from the box
+            Ping();
+            while ((ul_Echo_Time / 58) > 5) {
+              servo_LeftMotor.write(ui_Left_Motor_Speed);
+              servo_RightMotor.write(ui_Right_Motor_Speed);
+              Ping();
+            }
+            
+            //Pulls back the arm
+            servo_ArmMotor.write(ci_Arm_Servo_Rectracted); 
+            
 
 
         }
