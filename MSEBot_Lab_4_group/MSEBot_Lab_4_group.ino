@@ -399,7 +399,7 @@ void loop()
           }
           else if (operationPhase == 3) {
             while (!(ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
-              trackLine();
+              trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
             }
 
 
@@ -424,8 +424,14 @@ void loop()
             }
             
             //Pulls back the arm
-            servo_ArmMotor.write(ci_Arm_Servo_Rectracted); 
+            servo_ArmMotor.write((ci_Arm_Servo_Retracted + ci_Arm_Servo_Retracted)/2); 
             
+            Serial.println(analogRead(ci_Light_Sensor));
+            
+            //previousTime = millis();
+            /*while (analogRead(ci_Light_Sensor)){
+              
+            }*/
 
 
         }
