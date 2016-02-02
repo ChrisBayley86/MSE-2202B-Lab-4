@@ -369,23 +369,6 @@ void loop()
 
             trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
 
-            if (((millis() - previousTimeMeasurement) >= 1500) && (activatedOnce == false)) {
-              if (encoder_LeftMotor.getRawPosition() >= encoder_RightMotor.getRawPosition()) {
-                turnLeftAtFirstStop = false;
-              }
-              else {
-                turnLeftAtFirstStop = true;
-              }
-              activatedOnce = true;
-            }
-
-            Serial.print("TLAFS: ");
-            Serial.println(turnLeftAtFirstStop);
-            Serial.print("Left Encoder: ");
-            Serial.print(encoder_LeftMotor.getRawPosition());
-            Serial.print("Right Encoder: ");
-            Serial.print(encoder_RightMotor.getRawPosition());
-            
             
             
             if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
