@@ -342,14 +342,32 @@ void loop()
           ui_Middle_On_Yellow = (ui_Middle_Line_Tracker_Data < (ui_Middle_Line_Tracker_Dark - ui_Line_Tracker_Tolerance));
           ui_Right_On_Yellow = (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance));
 
-          
+          /****************************************
+          Operational Phases
+
+          1. Follow line to first block then stop
+          2. Move arm forward, open claw and make the 90o turn.
+          3. Line tracking code again, stop at second block.
+          4. Scan environment for highest light sensor read (lowest is brightest).
+          5. Record encoder values at the brightest.
+          6. Make wheels return to that position.
+          7. Fully extend arm and grab.
+          8. Back up a bit and turn.
+          9. Line tracking again.
+          10. Turn 90o again.
+          11. Drive straight to drop off point.
+          12. Extend arm and release.
+          *****************************************/
+
+
+
 
           if (operationPhase == 1) {
-            
+
             trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
-            
+
             if (((millis() - previousTimeMeasurement) >= 1500) && (activatedOnce == false)) {
-              if (servo_LeftMotor.getRawPosition() >= servo_RightMotor.getRawPosition()) {
+              if (encoder_LeftMotor.getRawPosition() >= encoder_RightMotor.getRawPosition()) {
                 turnLeftAtFirstStop = false;
               }
               else {
@@ -357,44 +375,69 @@ void loop()
               }
               activatedOnce = true;
             }
-            
+
             if ((activatedOnce == true) && (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
               operationPhase++;
             }
 
           }
           else if (operationPhase == 2) {
-            if (turnLeftAtFirstStop == true) {
-              servo_LeftMotor.write(1350);
-              servo_LeftMotor.write(1650);
+            while (!(ui_Middle_On_Yellow)) {
+              if (turnLeftAtFirstStop == true) {
+                servo_LeftMotor.write(1350);
+                servo_LeftMotor.write(1650);
+              }
+              else {
+                servo_LeftMotor.write(1650);
+                servo_LeftMotor.write(1350);
+              }
             }
-            else {
-              servo_LeftMotor.write(1650);
-              servo_LeftMotor.write(1350);
+
+            //Grip open code
+            //Arm extension code
+            operationPhase++;
+          }
+          else if (operationPhase == 3) {
+            while (!(ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
+              trackLine();
             }
+
+
+            /*
+            //Check status and drive forward until 3 cm from the box
+            while ((ul_Echo_Time / 58) > 3) {
+              servo_LeftMotor.write(ui_Left_Motor_Speed);
+              servo_RightMotor.write(ui_Right_Motor_Speed);
+              Ping();
+            }
+            */
+          }
+          else if (operationPhase == 4) {
+            //Scan for the flag (light)
+            while /**/ {
 
           }
 
 
+        }
 
 
 
-
-          /*
-                      if (bt_Motors_Enabled)
-                      {
-                        servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
-                        servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-                      }
-                      else
-                      {
-                        servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-                        servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-                      }
-          */
+        /*
+                    if (bt_Motors_Enabled)
+                    {
+                      servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+                      servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+                    }
+                    else
+                    {
+                      servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
+                      servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
+                    }
+        */
 
 #ifdef DEBUG_MOTORS
-          Serial.print("Motors enabled: ");
+        Serial.print("Motors enabled: ");
           Serial.print(bt_Motors_Enabled);
           Serial.print(", Default: ");
           Serial.print(ui_Motors_Speed);
