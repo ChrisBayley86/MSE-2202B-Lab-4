@@ -127,8 +127,9 @@ unsigned int ui_Line_Tracker_Tolerance;
 unsigned int firsttime = 1;
 unsigned int firstencoderread;
 unsigned int operationPhase = 1;
+unsigned int ui_timesAtAllThree = 0;
 
-bool turnLeftAtFirstStop = false;
+bool turnLeftAtFirstStop = true;
 bool activatedOnce = false;
 
 unsigned int  ui_Robot_State_Index = 0;
@@ -314,8 +315,8 @@ void loop()
         unsigned int ui_Left_On_Yellow;
         unsigned int ui_Middle_On_Yellow;
         unsigned int ui_Right_On_Yellow;
-        
-        unsigned int ui_timesAtAllThree;
+
+        //unsigned int ui_timesAtAllThree;
 
 
 
@@ -368,16 +369,13 @@ void loop()
           if (operationPhase == 1) {
 
             trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
-
-            
-            
             if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
               ui_timesAtAllThree++;
             }
-
-            if (ui_timesAtAllThree >= 7) {
+            if (ui_timesAtAllThree >= 50) {
               operationPhase++;
             }
+            Serial.println(ui_timesAtAllThree);
             /*
             if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
               operationPhase++;
@@ -388,20 +386,23 @@ void loop()
           else if (operationPhase == 2) {
 
             encoder_LeftMotor.zero();
-            
-            
+            encoder_RightMotor.zero();
+
             if (turnLeftAtFirstStop == true) {
-              servo_LeftMotor.write(1350);
-              servo_LeftMotor.write(1650);
+              servo_LeftMotor.write(1250);
+              servo_RightMotor.write(1650);
             }
             else {
               servo_LeftMotor.write(1650);
-              servo_LeftMotor.write(1350);
+              servo_RightMotor.write(1350);
             }
 
-            if ((encoder_LeftMotor.getRawPosition()) >= 750) {
+            Serial.println(encoder_LeftMotor.getRawPosition());
+            Serial.println(encoder_RightMotor.getRawPosition());
+
+            if (((encoder_LeftMotor.getRawPosition()) >= 750) || (encoder_RightMotor.getRawPosition() >= 750)) {
               servo_LeftMotor.write(1500);
-              servo_LeftMotor.write(1500);
+              servo_RightMotor.write(1500);
             }
 
 
