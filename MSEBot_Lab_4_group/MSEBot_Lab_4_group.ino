@@ -87,8 +87,9 @@ const int ci_Left_Motor_Stop = 1500;        // 200 for brake mode; 1500 for stop
 const int ci_Right_Motor_Stop = 1500;
 const int ci_Grip_Motor_Open = 140;         // Experiment to determine appropriate value
 const int ci_Grip_Motor_Closed = 15;        //  "
-const int ci_Arm_Servo_Retracted = 30;      //  "
-const int ci_Arm_Servo_Extended = 150;      //  "
+const int ci_Arm_Servo_Retracted = 30;//  "
+const int ci_Arm_Servo_Middle = 90;//  "
+const int ci_Arm_Servo_Extended = 150;//  "
 const int ci_Display_Time = 500;
 const int ci_Line_Tracker_Calibration_Interval = 100;
 const int ci_Line_Tracker_Cal_Measures = 20;
@@ -103,7 +104,7 @@ unsigned long ul_Echo_Time;
 unsigned int ui_Left_Line_Tracker_Data;
 unsigned int ui_Middle_Line_Tracker_Data;
 unsigned int ui_Right_Line_Tracker_Data;
-unsigned int ui_Motors_Speed = 1650;        // Default run speed was 1900
+unsigned int ui_Motors_Speed = 1625;        // Default run speed was 1900
 unsigned int ui_Left_Motor_Speed;
 unsigned int ui_Right_Motor_Speed;
 long l_Left_Motor_Position;
@@ -124,12 +125,14 @@ unsigned int ui_Middle_Line_Tracker_Light;
 unsigned int ui_Right_Line_Tracker_Dark;
 unsigned int ui_Right_Line_Tracker_Light;
 unsigned int ui_Line_Tracker_Tolerance;
-unsigned int firsttime = 1;
-unsigned int firstencoderread;
-unsigned int operationPhase = 1;
-unsigned int ui_timesAtAllThree = 0;
+unsigned int TimeTurning = 1;       //should be 1 if not im testing
+unsigned int firstEncoderReadRight;
+unsigned int firstEncoderReadLeft;
+unsigned int operationPhase = 1;    //should be 1 if not im testing
+unsigned int timesatthree = 0;
+unsigned int prevDirection; // 0 for left, 1 for right
 
-bool turnLeftAtFirstStop = true;
+bool turnLeftAtFirstStop = false;
 bool activatedOnce = false;
 
 unsigned int  ui_Robot_State_Index = 0;
@@ -316,8 +319,6 @@ void loop()
         unsigned int ui_Middle_On_Yellow;
         unsigned int ui_Right_On_Yellow;
 
-        //unsigned int ui_timesAtAllThree;
-
 
 
         if (bt_3_S_Time_Up)
@@ -346,20 +347,19 @@ void loop()
           ui_Right_On_Yellow = (ui_Right_Line_Tracker_Data < (ui_Right_Line_Tracker_Dark - ui_Line_Tracker_Tolerance));
 
           /****************************************
-          Operational Phases
-
-          1. Follow line to first block then stop
-          2. Move arm forward, open claw and make the 90o turn.
-          3. Line tracking code again, stop at second block.
-          4. Scan environment for highest light sensor read (lowest is brightest).
-          5. Record encoder values at the brightest.
-          6. Make wheels return to that position.
-          7. Fully extend arm and grab.
-          8. Back up a bit and turn.
-          9. Line tracking again.
-          10. Turn 90o again.
-          11. Drive straight to drop off point.
-          12. Extend arm and release.
+            Operational Phases
+            1. Follow line to first block then stop
+            2. Move arm forward, open claw and make the 90o turn.
+            3. Line tracking code again, stop at second block.
+            4. Scan environment for highest light sensor read (lowest is brightest).
+            5. Record encoder values at the brightest.
+            6. Make wheels return to that position.
+            7. Fully extend arm and grab.
+            8. Back up a bit and turn.
+            9. Line tracking again.
+            10. Turn 90o again.
+            11. Drive straight to drop off point.
+            12. Extend arm and release.
           *****************************************/
 
 
@@ -369,73 +369,128 @@ void loop()
           if (operationPhase == 1) {
 
             trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
-            if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
-              ui_timesAtAllThree++;
+
+            if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
+              timesatthree++;
             }
-            if (ui_timesAtAllThree >= 50) {
-              operationPhase++;
-            }
-            Serial.println(ui_timesAtAllThree);
-            /*
-            if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
-              operationPhase++;
-              previousTimeMeasurement = millis();
-            }*/
-
-          }
-          else if (operationPhase == 2) {
-
-            encoder_LeftMotor.zero();
-            encoder_RightMotor.zero();
-
-            while (ui_Right_On_Yellow) {
-              servo_RightMotor.write(1800);
-            }
-            
-            
-            trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
-
-            Serial.println(encoder_LeftMotor.getRawPosition());
-            Serial.println(encoder_RightMotor.getRawPosition());
-
-            if (((encoder_LeftMotor.getRawPosition()) >= 750) || (encoder_RightMotor.getRawPosition() >= 750)) {
+            if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) && (timesatthree > 50)) {
               servo_LeftMotor.write(1500);
               servo_RightMotor.write(1500);
+              operationPhase++;
             }
-
-
-            servo_ArmMotor.write(ci_Arm_Servo_Extended); //30 is retracted, Full extension is 150,
+          }
+          else if (operationPhase == 2) {
+            servo_ArmMotor.write(ci_Arm_Servo_Middle); //30 is retracted, Full extension is 150,
             servo_GripMotor.write(ci_Grip_Motor_Open); //Closed is 15, Open is 140
             operationPhase++;
+            firstEncoderReadRight = encoder_RightMotor.getRawPosition();
+            delay(1000);
           }
-          else if (operationPhase == 3) {
-            while (!(ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
-              trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
-            }
 
+
+          else if (operationPhase == 3) {
+            if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
+              while ((TimeTurning == 1 && ((firstEncoderReadRight + 800) >= encoder_RightMotor.getRawPosition()))) {
+                servo_RightMotor.write(1700);
+                servo_LeftMotor.write(1500);
+              }
+            }
+            TimeTurning = 2;
+            operationPhase++;
+            servo_RightMotor.write(1500);
+            servo_LeftMotor.write(1500);
+            timesatthree = 0;
           }
+
           else if (operationPhase == 4) {
+            trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
+
+            if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
+              timesatthree++;
+            }
+            if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) && (timesatthree > 5)) {
+              servo_LeftMotor.write(1500);
+              servo_RightMotor.write(1500);
+              operationPhase++;
+              firstEncoderReadRight = encoder_RightMotor.getRawPosition();
+              firstEncoderReadLeft = encoder_LeftMotor.getRawPosition();
+            }
+            delay(300);
+          }
+
+          else if (operationPhase == 5) {
             //Scan for the pedestal
-            //Check status and drive forward until 5 cm from the box
-            Ping();
-            while ((ul_Echo_Time / 58) > 5) {
+            //First Turn
+            while (TimeTurning == 2 && ((firstEncoderReadRight + 150) >= encoder_RightMotor.getRawPosition())) {
+              servo_RightMotor.write(1600);
+              servo_LeftMotor.write(1500);
+              Serial.println("Loop 1");
+              if ((firstEncoderReadRight + 150) <= encoder_RightMotor.getRawPosition()) {
+                TimeTurning = 3;
+              }
+            }
+            servo_RightMotor.write(1500);
+            servo_LeftMotor.write(1500);
+
+            //Second Turn
+            while ((TimeTurning == 3 && (firstEncoderReadRight <= encoder_RightMotor.getRawPosition()))) {
+              servo_RightMotor.write(1400);
+              servo_LeftMotor.write(1500);
+              Serial.println("Loop 2");
+              if (firstEncoderReadRight >= encoder_RightMotor.getRawPosition()) {
+                TimeTurning = 4;
+              }
+            }
+            servo_RightMotor.write(1500);
+            servo_LeftMotor.write(1500);
+
+            //Third Turn
+            while ((TimeTurning == 4 && ((firstEncoderReadLeft + 150) >= encoder_LeftMotor.getRawPosition()))) {
+              servo_RightMotor.write(1500);
+              servo_LeftMotor.write(1600);
+              Serial.println("Loop 3");
+              if ((firstEncoderReadLeft + 150) <= encoder_LeftMotor.getRawPosition()) {
+                TimeTurning = 5;
+              }
+            }
+            servo_RightMotor.write(1500);
+            servo_LeftMotor.write(1500);
+
+            //Fourth Turn
+            while ((TimeTurning == 5 && (firstEncoderReadLeft <= encoder_LeftMotor.getRawPosition()))) {
+              servo_RightMotor.write(1500);
+              servo_LeftMotor.write(1400);
+              Serial.println("Loop 4");
+              if (firstEncoderReadLeft >= encoder_LeftMotor.getRawPosition()) {
+                TimeTurning = 6;
+              }
+            }
+            servo_RightMotor.write(1500);
+            servo_LeftMotor.write(1500);
+
+
+
+            /*
+              //Check status and drive forward until 5 cm from the box
+              Ping();
+              while ((ul_Echo_Time / 58) > 5) {
               servo_LeftMotor.write(ui_Left_Motor_Speed);
               servo_RightMotor.write(ui_Right_Motor_Speed);
               Ping();
-            }
+              }
 
-            //Pulls back the arm
-            servo_ArmMotor.write((ci_Arm_Servo_Retracted + ci_Arm_Servo_Retracted) / 2);
+              //Pulls back the arm
+              servo_ArmMotor.write((ci_Arm_Servo_Retracted + ci_Arm_Servo_Retracted) / 2);
 
-            Serial.println(analogRead(ci_Light_Sensor));
+              Serial.println(analogRead(ci_Light_Sensor));
 
-            /*previousTime = millis();
-            while (analogRead(ci_Light_Sensor) > 40){
+              /*previousTime = millis();
+              while (analogRead(ci_Light_Sensor) > 40){
               if (millis()
-            }*/
-            servo_LeftMotor.write(2400);
-            servo_RightMotor.write(2400);
-
+              }
+              servo_LeftMotor.write(2400);
+              servo_RightMotor.write(2400);
+            */
 
           }
 
@@ -723,19 +778,13 @@ void trackLine(unsigned int ui_Left_On_Yellow, unsigned int ui_Middle_On_Yellow,
 
     //If nothing
     if ( !((ui_Left_On_Yellow) || (ui_Middle_On_Yellow) || (ui_Right_On_Yellow)) ) {
-
-      Serial.println("Nothing");
-      if (firsttime == 1) {
-        firstencoderread = encoder_LeftMotor.getRawPosition();
-        firsttime = 2;
-      }
-      //Spin L
-      if (encoder_LeftMotor.getRawPosition() < firstencoderread + 390) {
-        servo_LeftMotor.writeMicroseconds(1650);
-        servo_RightMotor.writeMicroseconds(1350);
+      Serial.println("Nothing"); // 0 is for left , 1 is for right.
+      if (prevDirection == 0) {
+        servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+        servo_LeftMotor.writeMicroseconds(1500);
       }
       else {
-        servo_LeftMotor.writeMicroseconds(1500);
+        servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
         servo_RightMotor.writeMicroseconds(1500);
       }
       //return 0;
@@ -759,8 +808,9 @@ void trackLine(unsigned int ui_Left_On_Yellow, unsigned int ui_Middle_On_Yellow,
       //If L
       else if (ui_Left_On_Yellow) {
         Serial.println("Left");
-        servo_LeftMotor.writeMicroseconds(1500);
         servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+        servo_LeftMotor.writeMicroseconds(1500);
+        prevDirection = 0;
         //return 1;
       }
 
@@ -775,8 +825,9 @@ void trackLine(unsigned int ui_Left_On_Yellow, unsigned int ui_Middle_On_Yellow,
       //If R
       else if (ui_Right_On_Yellow) {
         Serial.println("Right");
-        servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed + 100);
-        servo_RightMotor.writeMicroseconds(1300);
+        servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
+        servo_RightMotor.writeMicroseconds(1500);
+        prevDirection = 1;
         //return 2;
       }
     }
