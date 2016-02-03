@@ -129,7 +129,7 @@ unsigned int ui_Line_Tracker_Tolerance;
 unsigned int TimeTurning = 2;       //should be 1 if not im testing
 unsigned int firstEncoderReadRight;
 unsigned int firstEncoderReadLeft;
-unsigned int operationPhase = 5;    //should be 1 if not im testing
+unsigned int operationPhase = 7;    //should be 1 if not im testing
 unsigned int timesatthree = 0;
 unsigned int prevDirection; // 0 for left, 1 for right
 unsigned int ui_Best_Left_Encoder_Position = 0;
@@ -496,9 +496,9 @@ void loop()
             }
             servo_RightMotor.write(1500);
             servo_LeftMotor.write(1500);
-            
-           
-            
+
+
+
             /*
               //Check status and drive forward until 5 cm from the box
               Ping();
@@ -543,17 +543,11 @@ void loop()
           *****************************************/
 
           else if (operationPhase == 7) {
-            while (servo_GripMotor.read() < ci_Grip_Motor_Open) {
-              servo_GripMotor.write(ci_Grip_Motor_Open);
-            }
 
-            while (servo_ArmMotor.read() < ci_Arm_Servo_Extended) {
-              servo_ArmMotor.write(ci_Arm_Servo_Extended);
-            }
-
-            while (servo_GripMotor.read() > ci_Grip_Motor_Closed) {
-              servo_GripMotor.write(ci_Grip_Motor_Closed);
-            }
+            servo_GripMotor.write(ci_Grip_Motor_Open);
+            moveArmSlowly(ci_Arm_Servo_Middle, ci_Arm_Servo_Extended);
+            servo_GripMotor.write(ci_Grip_Motor_Closed);
+            moveArmSlowly(ci_Arm_Servo_Extended, ci_Arm_Servo_Middle);
 
           }
           else if (operationPhase == 8) {
@@ -565,6 +559,10 @@ void loop()
           else if (operationPhase == 11) {
           }
           else if (operationPhase == 12) {
+            
+            moveArmSlowly(ci_Arm_Servo_Middle, ci_Arm_Servo_Extended);
+            servo_GripMotor.write(ci_Grip_Motor_Open);
+            
           }
 
 
@@ -905,5 +903,21 @@ void trackLine(unsigned int ui_Left_On_Yellow, unsigned int ui_Middle_On_Yellow,
       }
     }
 
+  }
+}
+
+
+void moveArmSlowly(int initialPosition, int finalPosition) {
+  if (initialPosition < finalPosition) {
+    for (int i = initialPosition; i < finalPosition) {
+      servo_ArmMotor.write(i);
+      delay(20);
+    }
+  }
+  else if (initialPosition > finalPosition) {
+    for (int i = initialPosition; i > finalPosition) {
+      servo_ArmMotor.write(i);
+      delay(20);
+    }
   }
 }
