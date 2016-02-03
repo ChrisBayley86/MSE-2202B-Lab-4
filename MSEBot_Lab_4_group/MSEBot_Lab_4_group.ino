@@ -134,6 +134,8 @@ unsigned int timesatthree = 0;
 unsigned int prevDirection; // 0 for left, 1 for right
 unsigned int ui_Left_Encoder_Position = 0;
 unsigned int ui_Right_Encoder_Position = 0;
+unsigned int ui_last_best_light_reading = 100;
+unsigned int ui_current_light_reading = 0;
 
 bool turnLeftAtFirstStop = false;
 bool activatedOnce = false;
@@ -428,7 +430,9 @@ void loop()
               servo_RightMotor.write(1600);
               servo_LeftMotor.write(1500);
               Serial.println("Loop 1");
-              if ((analogRead(ci_Light_Sensor) < ci_Light_Sensor_Threshold) && !(activatedOnce) ) {
+              ui_current_light_reading = analogRead(ci_Light_Sensor);
+              if (((ui_current_light_reading < ci_Light_Sensor_Threshold) && !(activatedOnce) ) || (ui_last_best_light_reading > ui_current_light_reading)) {
+                ui_last_best_light_reading = ui_current_light_reading;
                 ui_Left_Encoder_Position = encoder_LeftMotor.getRawPosition();
                 ui_Right_Encoder_Position = encoder_RightMotor.getRawPosition();
                 activatedOnce = true;
@@ -446,7 +450,9 @@ void loop()
               servo_RightMotor.write(1400);
               servo_LeftMotor.write(1500);
               Serial.println("Loop 2");
-              if ((analogRead(ci_Light_Sensor) < ci_Light_Sensor_Threshold) && !(activatedOnce) ) {
+              ui_current_light_reading = analogRead(ci_Light_Sensor);
+              if (((ui_current_light_reading < ci_Light_Sensor_Threshold) && !(activatedOnce) ) || (ui_last_best_light_reading > ui_current_light_reading)) {
+                ui_last_best_light_reading = ui_current_light_reading;
                 ui_Left_Encoder_Position = encoder_LeftMotor.getRawPosition();
                 ui_Right_Encoder_Position = encoder_RightMotor.getRawPosition();
                 activatedOnce = true;
@@ -463,7 +469,9 @@ void loop()
               servo_RightMotor.write(1500);
               servo_LeftMotor.write(1600);
               Serial.println("Loop 3");
-              if ((analogRead(ci_Light_Sensor) < ci_Light_Sensor_Threshold) && !(activatedOnce) ){
+              ui_current_light_reading = analogRead(ci_Light_Sensor);
+              if (((ui_current_light_reading < ci_Light_Sensor_Threshold) && !(activatedOnce) ) || (ui_last_best_light_reading > ui_current_light_reading)) {
+                ui_last_best_light_reading = ui_current_light_reading;
                 ui_Left_Encoder_Position = encoder_LeftMotor.getRawPosition();
                 ui_Right_Encoder_Position = encoder_RightMotor.getRawPosition();
                 activatedOnce = true;
@@ -480,7 +488,9 @@ void loop()
               servo_RightMotor.write(1500);
               servo_LeftMotor.write(1400);
               Serial.println("Loop 4");
-              if ((analogRead(ci_Light_Sensor) < ci_Light_Sensor_Threshold) && !(activatedOnce) ){
+              ui_current_light_reading = analogRead(ci_Light_Sensor);
+              if (((ui_current_light_reading < ci_Light_Sensor_Threshold) && !(activatedOnce) ) || (ui_last_best_light_reading > ui_current_light_reading)) {
+                ui_last_best_light_reading = ui_current_light_reading;
                 ui_Left_Encoder_Position = encoder_LeftMotor.getRawPosition();
                 ui_Right_Encoder_Position = encoder_RightMotor.getRawPosition();
                 activatedOnce = true;
@@ -516,6 +526,21 @@ void loop()
               servo_RightMotor.write(2400);
             */
 
+          }
+          else if (operationPhase == 6) {
+            //Return to the encoder position registered by the sensors of the brightest light
+          }
+          else if (operationPhase == 7) {
+          }
+          else if (operationPhase == 8) {
+          }
+          else if (operationPhase == 9) {
+          }
+          else if (operationPhase == 10) {
+          }
+          else if (operationPhase == 11) {
+          }
+          else if (operationPhase == 12) {
           }
 
 
