@@ -126,10 +126,10 @@ unsigned int ui_Middle_Line_Tracker_Light;
 unsigned int ui_Right_Line_Tracker_Dark;
 unsigned int ui_Right_Line_Tracker_Light;
 unsigned int ui_Line_Tracker_Tolerance;
-unsigned int TimeTurning = 1;       //should be 1 if not im testing
+unsigned int TimeTurning = 2;       //should be 1 if not im testing
 unsigned int firstEncoderReadRight;
 unsigned int firstEncoderReadLeft;
-unsigned int operationPhase = 1;    //should be 1 if not im testing
+unsigned int operationPhase = 5;    //should be 1 if not im testing
 unsigned int timesatthree = 0;
 unsigned int prevDirection; // 0 for left, 1 for right
 unsigned int ui_Left_Encoder_Position = 0;
@@ -431,7 +431,7 @@ void loop()
               servo_LeftMotor.write(1500);
               Serial.println("Loop 1");
               ui_current_light_reading = analogRead(ci_Light_Sensor);
-              if (((ui_current_light_reading < ci_Light_Sensor_Threshold) && !(activatedOnce) ) || (ui_last_best_light_reading > ui_current_light_reading)) {
+              if (((ui_current_light_reading < ci_Light_Sensor_Threshold) && !(activatedOnce) ) || (ui_last_best_light_reading > ui_current_light_reading) && (ui_current_light_reading != 0) ) {
                 ui_last_best_light_reading = ui_current_light_reading;
                 ui_Left_Encoder_Position = encoder_LeftMotor.getRawPosition();
                 ui_Right_Encoder_Position = encoder_RightMotor.getRawPosition();
@@ -441,6 +441,11 @@ void loop()
               if ((firstEncoderReadRight + 150) <= encoder_RightMotor.getRawPosition()) {
                 TimeTurning = 3;
               }
+              Serial.print("LBLR: ");
+              Serial.println(ui_last_best_light_reading);
+              Serial.print("Light Values: ");
+              Serial.println(ui_current_light_reading);
+              Serial.println();
             }
             servo_RightMotor.write(1500);
             servo_LeftMotor.write(1500);
@@ -460,6 +465,11 @@ void loop()
               if (firstEncoderReadRight >= encoder_RightMotor.getRawPosition()) {
                 TimeTurning = 4;
               }
+              Serial.print("LBLR: ");
+              Serial.println(ui_last_best_light_reading);
+              Serial.print("Light Values: ");
+              Serial.println(ui_current_light_reading);
+              Serial.println();
             }
             servo_RightMotor.write(1500);
             servo_LeftMotor.write(1500);
@@ -479,6 +489,11 @@ void loop()
               if ((firstEncoderReadLeft + 150) <= encoder_LeftMotor.getRawPosition()) {
                 TimeTurning = 5;
               }
+              Serial.print("LBLR: ");
+              Serial.println(ui_last_best_light_reading);
+              Serial.print("Light Values: ");
+              Serial.println(ui_current_light_reading);
+              Serial.println();
             }
             servo_RightMotor.write(1500);
             servo_LeftMotor.write(1500);
@@ -498,6 +513,11 @@ void loop()
               if (firstEncoderReadLeft >= encoder_LeftMotor.getRawPosition()) {
                 TimeTurning = 6;
               }
+              Serial.print("LBLR: ");
+              Serial.println(ui_last_best_light_reading);
+              Serial.print("Light Values: ");
+              Serial.println(ui_current_light_reading);
+              Serial.println();
             }
             servo_RightMotor.write(1500);
             servo_LeftMotor.write(1500);
@@ -530,7 +550,36 @@ void loop()
           else if (operationPhase == 6) {
             //Return to the encoder position registered by the sensors of the brightest light
           }
+          //Reposting for clarity
+          /****************************************
+            Operational Phases
+            1. Follow line to first block then stop
+            2. Move arm forward, open claw and make the 90o turn.
+            3. Line tracking code again, stop at second block.
+            4. Scan environment for highest light sensor read (lowest is brightest).
+            5. Record encoder values at the brightest.
+            6. Make wheels return to that position.
+            7. Fully extend arm and grab.
+            8. Back up a bit and turn.
+            9. Line tracking again.
+            10. Turn 90o again.
+            11. Drive straight to drop off point.
+            12. Extend arm and release.
+          *****************************************/
+
           else if (operationPhase == 7) {
+            while (servo_GripMotor.read() < ci_Grip_Motor_Open) {
+              servo_GripMotor.write(ci_Grip_Motor_Open);
+            }
+            
+            while (servo_ArmMotor.read() < ci_Arm_Servo_Extended) {
+              servo_ArmMotor.write(ci_Arm_Servo_Extended);
+            }
+            
+            while (servo_GripMotor.read() > ci_Grip_Motor_Closed) {
+              servo_GripMotor.write(ci_Grip_Motor_Closed);
+            }
+            
           }
           else if (operationPhase == 8) {
           }
