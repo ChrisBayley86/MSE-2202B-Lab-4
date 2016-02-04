@@ -353,18 +353,19 @@ void loop()
 
           /****************************************
             Operational Phases
-            1. Follow line to first block then stop
-            2. Move arm forward, open claw and make the 90o turn.
-            3. Line tracking code again, stop at second block.
-            4. Scan environment for highest light sensor read (lowest is brightest).
-            5. Record encoder values at the brightest.
-            6. Make wheels return to that position.
-            7. Fully extend arm and grab.
-            8. Back up a bit and turn.
-            9. Line tracking again.
-            10. Turn 90o again.
-            11. Drive straight to drop off point.
-            12. Extend arm and release.
+          1. Follow line to first block then stop
+          2. Move arm forward and open claw.
+          3. Make the 90o turn.
+          4. Line tracking code again, stop at second block.
+          5. Scan environment for highest light sensor read (lowest is brightest) and record encoder values at the brightest.
+          6. Make wheels return to that position.
+          7. Move 5cm away, get the light and retract the claw.
+          8. Turn to find next line.
+          9. Line tracking again.
+          10. Turn 90o again.
+          11. Drive straight to drop off point.
+          12. Extend arm and release.
+
           *****************************************/
 
 
@@ -518,21 +519,32 @@ void loop()
           //Reposting for clarity
           /****************************************
             Operational Phases
-            1. Follow line to first block then stop
-            2. Move arm forward, open claw and make the 90o turn.
-            3. Line tracking code again, stop at second block.
-            4. Scan environment for highest light sensor read (lowest is brightest).
-            5. Record encoder values at the brightest.
-            6. Make wheels return to that position.
-            7. Fully extend arm and grab.
-            8. Back up a bit and turn.
-            9. Line tracking again.
-            10. Turn 90o again.
-            11. Drive straight to drop off point.
-            12. Extend arm and release.
+          1. Follow line to first block then stop
+          2. Move arm forward and open claw.
+          3. Make the 90o turn.
+          4. Line tracking code again, stop at second block.
+          5. Scan environment for highest light sensor read (lowest is brightest) and record encoder values at the brightest.
+          6. Make wheels return to that position.
+          7. Move 5cm away, get the light and retract the claw.
+          8. Turn to find next line.
+          9. Line tracking again.
+          10. Turn 90o again.
+          11. Drive straight to drop off point.
+          12. Extend arm and release.
+
           *****************************************/
 
           else if (operationPhase == 7) {
+
+            Ping();
+            while ((ul_Echo_Time / 24) > 6) {
+              Ping();
+              servo_LeftMotor.write(ui_Left_Motor_Speed);
+              servo_RightMotor.write(ui_Right_Motor_Speed);
+            }
+            servo_LeftMotor.write(1500);
+            servo_RightMotor.write(1500);
+
 
             servo_GripMotor.write(ci_Grip_Motor_Open);
             moveArmSlowly(ci_Arm_Servo_Middle, ci_Arm_Servo_Extended);
@@ -540,7 +552,7 @@ void loop()
             moveArmSlowly(ci_Arm_Servo_Extended, ci_Arm_Servo_Middle);
 
           }
-          else if (operationPhase == 10) {//Turn and then follow the line to the block
+          else if (operationPhase == 8) {//Turn and then follow the line to the block
             while ((TimeTurning == 6 && ((firstEncoderReadLeft + 800) >= encoder_LeftMotor.getRawPosition()))) {
               servo_RightMotor.write(1500);
               servo_LeftMotor.write(1700);
@@ -550,7 +562,7 @@ void loop()
               }
             }
           }
-          else if (operationPhase == 11) {
+          else if (operationPhase == 9) {
             trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
             if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
               timesatthree++;
@@ -562,7 +574,7 @@ void loop()
               firstEncoderReadRight = encoder_RightMotor.getRawPosition();
             }
           }
-          else if (operationPhase == 8) {
+          else if (operationPhase == 10) {
             if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
               while ((TimeTurning == 7 && ((firstEncoderReadRight + 800) >= encoder_RightMotor.getRawPosition()))) {
                 servo_RightMotor.write(1700);
@@ -576,6 +588,7 @@ void loop()
             timesatthree = 0;
           }
           else if (operationPhase == 9) { // needs work because it should stop 5cm away from box
+
             servo_RightMotor.write(1650);
             servo_LeftMotor.write(1650);
           }
