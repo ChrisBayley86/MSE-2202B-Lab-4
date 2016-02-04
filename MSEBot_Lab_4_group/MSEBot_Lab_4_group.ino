@@ -500,22 +500,22 @@ void loop()
           }
           else if (operationPhase == 6) {
             //Return to the encoder position registered by the sensors of the brightest light
-            
-                while ((TimeTurning == 6 && (firstEncoderReadRight <= ui_Best_Right_Encoder_Position))) {
-                  servo_RightMotor.write(1600);
-                  servo_LeftMotor.write(1500);
-                  if (firstEncoderReadRight >= ui_Best_Right_Encoder_Position) {
-                    TimeTurning = 7;
-                  }
-                }
-                while ((TimeTurning == 7 && (firstEncoderReadLeft <= ui_Best_Left_Encoder_Position))) {
-                  servo_RightMotor.write(1500);
-                  servo_LeftMotor.write(1600);
-                  if (firstEncoderReadLeft >= ui_Best_Left_Encoder_Position) {
-                    TimeTurning = 8;
-                  }
-                }
-                operationPhase++;
+
+            while ((TimeTurning == 6 && (firstEncoderReadRight <= ui_Best_Right_Encoder_Position))) {
+              servo_RightMotor.write(1600);
+              servo_LeftMotor.write(1500);
+              if (firstEncoderReadRight >= ui_Best_Right_Encoder_Position) {
+                TimeTurning = 7;
+              }
+            }
+            while ((TimeTurning == 7 && (firstEncoderReadLeft <= ui_Best_Left_Encoder_Position))) {
+              servo_RightMotor.write(1500);
+              servo_LeftMotor.write(1600);
+              if (firstEncoderReadLeft >= ui_Best_Left_Encoder_Position) {
+                TimeTurning = 8;
+              }
+            }
+            operationPhase++;
           }
 
           else if (operationPhase == 7) {
@@ -534,7 +534,7 @@ void loop()
             moveArmSlowly(ci_Arm_Servo_Middle, ci_Arm_Servo_Extended);
             servo_GripMotor.write(ci_Grip_Motor_Closed);
             moveArmSlowly(ci_Arm_Servo_Extended, ci_Arm_Servo_Middle);
-            
+
             operationPhase++;
 
           }
@@ -582,34 +582,39 @@ void loop()
             }
             servo_LeftMotor.write(1500);
             servo_RightMotor.write(1500);
-
+            operationPhase++;
           }
           else if (operationPhase == 12) {
 
             moveArmSlowly(ci_Arm_Servo_Middle, ci_Arm_Servo_Extended);
             servo_GripMotor.write(ci_Grip_Motor_Open);
+            operationPhase++;
+          }
 
+          else if (operationPhase == 13) { //Celebration
+            servo_LeftMotor.write(2500);
+            servo_RightMotor.write(500);
           }
 
 
 #ifdef DEBUG_MOTORS
-          Serial.print("Motors enabled: ");
-          Serial.print(bt_Motors_Enabled);
-          Serial.print(", Default: ");
-          Serial.print(ui_Motors_Speed);
-          Serial.print(", Left = ");
-          Serial.print(ui_Left_Motor_Speed);
-          Serial.print(", Right = ");
-          Serial.println(ui_Right_Motor_Speed);
+                   Serial.print("Motors enabled: ");
+                   Serial.print(bt_Motors_Enabled);
+                   Serial.print(", Default: ");
+                   Serial.print(ui_Motors_Speed);
+                   Serial.print(", Left = ");
+                   Serial.print(ui_Left_Motor_Speed);
+                   Serial.print(", Right = ");
+                   Serial.println(ui_Right_Motor_Speed);
 #endif
-          ui_Mode_Indicator_Index = 1;
+                   ui_Mode_Indicator_Index = 1;
         }
-        break;
-      }
+      break;
+    }
 
-    case 2:    //Calibrate line tracker light levels after 3 seconds
-      {
-        if (bt_3_S_Time_Up)
+  case 2:    //Calibrate line tracker light levels after 3 seconds
+    {
+      if (bt_3_S_Time_Up)
         {
           if (!bt_Cal_Initialized)
           {
