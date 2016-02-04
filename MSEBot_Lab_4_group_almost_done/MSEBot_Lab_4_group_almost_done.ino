@@ -127,10 +127,10 @@ unsigned int ui_Middle_Line_Tracker_Light;
 unsigned int ui_Right_Line_Tracker_Dark;
 unsigned int ui_Right_Line_Tracker_Light;
 unsigned int ui_Line_Tracker_Tolerance;
-unsigned int TimeTurning = 1;       //should be 1 if not im testing
+unsigned int TimeTurning = 8;       //should be 1 if not im testing
 unsigned int firstEncoderReadRight;
 unsigned int firstEncoderReadLeft;
-unsigned int operationPhase = 1;    //should be 1 if not im testing
+unsigned int operationPhase = 8;    //should be 1 if not im testing
 unsigned int timesatthree = 0;
 unsigned int prevDirection; // 0 for left, 1 for right
 unsigned int ui_Best_Left_Encoder_Position = 0;
@@ -549,13 +549,19 @@ void loop()
 
             //Serial.println( (ul_Echo_Time / 24) );
 
-            if ((ul_Echo_Time / 24) < 10) {
+            if (((ul_Echo_Time / 24) < 10) && (ul_Echo_Time/24)) {
               servo_LeftMotor.write(1500);
               servo_RightMotor.write(1500);
+              
+              //Arm & Grip commands
               servo_GripMotor.write(ci_Grip_Motor_Open);
               moveArmSlowly(ci_Arm_Servo_Scan, ci_Arm_Servo_Extended);
               servo_GripMotor.write(ci_Grip_Motor_Closed);
               moveArmSlowly(ci_Arm_Servo_Extended, ci_Arm_Servo_Retracted);
+              //Updates the 
+              firstEncoderReadLeft = encoder_LeftMotor.getRawPosition();
+              firstEncoderReadRight = encoder_RightMotor.getRawPosition();
+              
               operationPhase++;
             }
 
