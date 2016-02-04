@@ -508,17 +508,7 @@ void loop()
               Ping();
               }
 
-              //Pulls back the arm
-              servo_ArmMotor.write((ci_Arm_Servo_Retracted + ci_Arm_Servo_Retracted) / 2);
-
-              Serial.println(analogRead(ci_Light_Sensor));
-
-              /*previousTime = millis();
-              while (analogRead(ci_Light_Sensor) > 40){
-              if (millis()
-              }
-              servo_LeftMotor.write(2400);
-              servo_RightMotor.write(2400);
+              
             */
 
           }
@@ -564,6 +554,7 @@ void loop()
             servo_GripMotor.write(ci_Grip_Motor_Open);
             
           }
+          
 
 
 
@@ -909,13 +900,13 @@ void trackLine(unsigned int ui_Left_On_Yellow, unsigned int ui_Middle_On_Yellow,
 
 void moveArmSlowly(int initialPosition, int finalPosition) {
   if (initialPosition < finalPosition) {
-    for (int i = initialPosition; i < finalPosition) {
+    for (int i = initialPosition; i < finalPosition; i++) {
       servo_ArmMotor.write(i);
       delay(20);
     }
   }
   else if (initialPosition > finalPosition) {
-    for (int i = initialPosition; i > finalPosition) {
+    for (int i = initialPosition; i > finalPosition; i--) {
       servo_ArmMotor.write(i);
       delay(20);
     }
