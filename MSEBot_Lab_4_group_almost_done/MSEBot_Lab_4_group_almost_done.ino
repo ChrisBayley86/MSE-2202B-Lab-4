@@ -576,13 +576,14 @@ void loop()
 
           }
           else if (operationPhase == 8) {//Turn and then follow the line to the block
-            while ((TimeTurning == 8 && ((firstEncoderReadLeft + 800) >= encoder_LeftMotor.getRawPosition()))) {
-              servo_RightMotor.write(1500);
-              servo_LeftMotor.write(1700);
-              if (ui_Left_On_Yellow || ui_Middle_On_Yellow || ui_Right_On_Yellow) {
-                TimeTurning = 9;
-                operationPhase++;
-              }
+            // while ((TimeTurning == 8 && ((firstEncoderReadLeft + 800) >= encoder_LeftMotor.getRawPosition()))) {
+
+            // }
+            servo_RightMotor.write(1500);
+            servo_LeftMotor.write(1700);
+            if (ui_Left_On_Yellow || ui_Middle_On_Yellow || ui_Right_On_Yellow) {
+              TimeTurning = 9;
+              operationPhase++;
             }
           }
           else if (operationPhase == 9) {
@@ -612,8 +613,8 @@ void loop()
           }
           else if (operationPhase == 11) {
             Ping();
-            servo_LeftMotor.write(1700);
-            servo_RightMotor.write(1700);
+            servo_LeftMotor.write(1600);
+            servo_RightMotor.write(1600);
             if ((ul_Echo_Time / 24) < 15) {
               servo_LeftMotor.write(1500);
               servo_RightMotor.write(1500);
