@@ -563,6 +563,8 @@ void loop()
               firstEncoderReadLeft = encoder_LeftMotor.getRawPosition();
               firstEncoderReadRight = encoder_RightMotor.getRawPosition();
               
+              //Essential to get OP 8 to work
+              TimeTurning = 8;
               operationPhase++;
             }
 
