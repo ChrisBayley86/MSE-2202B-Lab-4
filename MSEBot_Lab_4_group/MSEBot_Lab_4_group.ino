@@ -497,42 +497,26 @@ void loop()
             }
             servo_RightMotor.write(1500);
             servo_LeftMotor.write(1500);
-
-
-
-            /*
-              //Check status and drive forward until 5 cm from the box
-              Ping();
-              while ((ul_Echo_Time / 58) > 5) {
-              servo_LeftMotor.write(ui_Left_Motor_Speed);
-              servo_RightMotor.write(ui_Right_Motor_Speed);
-              Ping();
-              }
-
-
-            */
-
           }
           else if (operationPhase == 6) {
             //Return to the encoder position registered by the sensors of the brightest light
+            
+                while ((TimeTurning == 6 && (firstEncoderReadRight <= ui_Best_Right_Encoder_Position))) {
+                  servo_RightMotor.write(1600);
+                  servo_LeftMotor.write(1500);
+                  if (firstEncoderReadRight >= ui_Best_Right_Encoder_Position) {
+                    TimeTurning = 7;
+                  }
+                }
+                while ((TimeTurning == 7 && (firstEncoderReadLeft <= ui_Best_Left_Encoder_Position))) {
+                  servo_RightMotor.write(1500);
+                  servo_LeftMotor.write(1600);
+                  if (firstEncoderReadLeft >= ui_Best_Left_Encoder_Position) {
+                    TimeTurning = 8;
+                  }
+                }
+                operationPhase++;
           }
-          //Reposting for clarity
-          /****************************************
-            Operational Phases
-          1. Follow line to first block then stop
-          2. Move arm forward and open claw.
-          3. Make the 90o turn.
-          4. Line tracking code again, stop at second block.
-          5. Scan environment for highest light sensor read (lowest is brightest) and record encoder values at the brightest.
-          6. Make wheels return to that position.
-          7. Move 5cm away, get the light and retract the claw.
-          8. Turn to find next line.
-          9. Line tracking again.
-          10. Turn 90o again.
-          11. Drive straight to drop off point.
-          12. Extend arm and release.
-
-          *****************************************/
 
           else if (operationPhase == 7) {
 
@@ -605,21 +589,6 @@ void loop()
 
           }
 
-
-
-
-          /*
-                      if (bt_Motors_Enabled)
-                      {
-                        servo_LeftMotor.writeMicroseconds(ui_Left_Motor_Speed);
-                        servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
-                      }
-                      else
-                      {
-                        servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
-                        servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-                      }
-          */
 
 #ifdef DEBUG_MOTORS
           Serial.print("Motors enabled: ");
