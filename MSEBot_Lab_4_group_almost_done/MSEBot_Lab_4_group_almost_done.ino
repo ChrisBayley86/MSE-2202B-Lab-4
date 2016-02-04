@@ -292,6 +292,9 @@ void loop()
         ui_Mode_Indicator_Index = 0;
 
 
+
+
+
 #ifdef DEBUG_ENCODERS
         l_Left_Motor_Position = encoder_LeftMotor.getRawPosition();
         l_Right_Motor_Position = encoder_RightMotor.getRawPosition();
@@ -530,23 +533,37 @@ void loop()
           else if (operationPhase == 7) {
 
             Ping();
+            //int distance = (ul_Echo_Time / 24);
+
+            /*
+            Serial.print("Echo distance in cm: ");
+                        Serial.println( (ul_Echo_Time / 24) );
+                        Serial.print("Loop condition 1: ");
+                        Serial.println( ( (ul_Echo_Time / 24) > 10 ) );*/
             servo_LeftMotor.write(1600);
             servo_RightMotor.write(1600);
-            if ((ul_Echo_Time / 24) < 6) {
+            //Ping();
+            //Serial.print("Loop condition 2: ");
+            //Serial.println( ( (ul_Echo_Time / 24) > 10 ) );
+
+
+            //Serial.println( (ul_Echo_Time / 24) );
+
+            if ((ul_Echo_Time / 24) < 10) {
               servo_LeftMotor.write(1500);
               servo_RightMotor.write(1500);
+              servo_GripMotor.write(ci_Grip_Motor_Open);
+              moveArmSlowly(ci_Arm_Servo_Scan, ci_Arm_Servo_Extended);
+              servo_GripMotor.write(ci_Grip_Motor_Closed);
+              moveArmSlowly(ci_Arm_Servo_Extended, ci_Arm_Servo_Retracted);
+              operationPhase++;
             }
-            servo_LeftMotor.write(1500);
-            servo_RightMotor.write(1500);
 
 
-            servo_GripMotor.write(ci_Grip_Motor_Open);
-            moveArmSlowly(ci_Arm_Servo_Scan, ci_Arm_Servo_Extended);
-            servo_GripMotor.write(ci_Grip_Motor_Closed);
-            moveArmSlowly(ci_Arm_Servo_Extended, ci_Arm_Servo_Retracted);
-            servo_LeftMotor.write(1500);
-            servo_RightMotor.write(1500);
-            operationPhase++;
+
+            //servo_LeftMotor.write(1500);
+            //servo_RightMotor.write(1500);
+            //operationPhase++;
 
           }
           else if (operationPhase == 8) {//Turn and then follow the line to the block
@@ -586,13 +603,12 @@ void loop()
           }
           else if (operationPhase == 11) {
             Ping();
-            while ((ul_Echo_Time / 24) < 6) {
-              Ping();
-              servo_LeftMotor.write(ui_Left_Motor_Speed);
-              servo_RightMotor.write(ui_Right_Motor_Speed);
+            servo_LeftMotor.write(1700);
+            servo_RightMotor.write(1700);
+            if ((ul_Echo_Time / 24) < 15) {
+              servo_LeftMotor.write(1500);
+              servo_RightMotor.write(1500);
             }
-            servo_LeftMotor.write(1500);
-            servo_RightMotor.write(1500);
             operationPhase++;
           }
           else if (operationPhase == 12) {
