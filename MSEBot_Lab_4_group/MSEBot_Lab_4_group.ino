@@ -508,7 +508,7 @@ void loop()
               Ping();
               }
 
-              
+
             */
 
           }
@@ -540,8 +540,47 @@ void loop()
             moveArmSlowly(ci_Arm_Servo_Extended, ci_Arm_Servo_Middle);
 
           }
-          else if (operationPhase == 8) {
+          else if (operationPhase == 10) {//Turn and then follow the line to the block
+            while ((TimeTurning == 6 && ((firstEncoderReadLeft + 800) >= encoder_LeftMotor.getRawPosition()))) {
+              servo_RightMotor.write(1500);
+              servo_LeftMotor.write(1700);
+              if (ui_Left_On_Yellow || ui_Middle_On_Yellow || ui_Right_On_Yellow) {
+                TimeTurning = 7;
+                operationPhase++;
+              }
+            }
           }
+          else if (operationPhase == 11) {
+            trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
+            if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
+              timesatthree++;
+            }
+            if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) && (timesatthree > 30)) {
+              servo_LeftMotor.write(1500);
+              servo_RightMotor.write(1500);
+              operationPhase++;
+              firstEncoderReadRight = encoder_RightMotor.getRawPosition();
+            }
+          }
+          else if (operationPhase == 8) {
+            if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
+              while ((TimeTurning == 7 && ((firstEncoderReadRight + 800) >= encoder_RightMotor.getRawPosition()))) {
+                servo_RightMotor.write(1700);
+                servo_LeftMotor.write(1500);
+              }
+            }
+            servo_RightMotor.write(1500);
+            servo_LeftMotor.write(1500);
+            TimeTurning = 8;
+            operationPhase++;
+            timesatthree = 0;
+          }
+          else if (operationPhase == 9) { // needs work because it should stop 5cm away from box
+            servo_RightMotor.write(1650);
+            servo_LeftMotor.write(1650);
+          }
+
+
           else if (operationPhase == 9) {
           }
           else if (operationPhase == 10) {
@@ -549,12 +588,12 @@ void loop()
           else if (operationPhase == 11) {
           }
           else if (operationPhase == 12) {
-            
+
             moveArmSlowly(ci_Arm_Servo_Middle, ci_Arm_Servo_Extended);
             servo_GripMotor.write(ci_Grip_Motor_Open);
-            
+
           }
-          
+
 
 
 
