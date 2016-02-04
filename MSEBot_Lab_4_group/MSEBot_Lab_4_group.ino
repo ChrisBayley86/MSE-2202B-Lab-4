@@ -534,6 +534,8 @@ void loop()
             moveArmSlowly(ci_Arm_Servo_Middle, ci_Arm_Servo_Extended);
             servo_GripMotor.write(ci_Grip_Motor_Closed);
             moveArmSlowly(ci_Arm_Servo_Extended, ci_Arm_Servo_Middle);
+            
+            operationPhase++;
 
           }
           else if (operationPhase == 8) {//Turn and then follow the line to the block
