@@ -587,18 +587,16 @@ void loop()
             operationPhase++;
             timesatthree = 0;
           }
-          else if (operationPhase == 9) { // needs work because it should stop 5cm away from box
-
-            servo_RightMotor.write(1650);
-            servo_LeftMotor.write(1650);
-          }
-
-
-          else if (operationPhase == 9) {
-          }
-          else if (operationPhase == 10) {
-          }
           else if (operationPhase == 11) {
+            Ping();
+            while ((ul_Echo_Time / 24) > 6) {
+              Ping();
+              servo_LeftMotor.write(ui_Left_Motor_Speed);
+              servo_RightMotor.write(ui_Right_Motor_Speed);
+            }
+            servo_LeftMotor.write(1500);
+            servo_RightMotor.write(1500);
+
           }
           else if (operationPhase == 12) {
 
