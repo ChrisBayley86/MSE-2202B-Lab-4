@@ -127,10 +127,10 @@ unsigned int ui_Middle_Line_Tracker_Light;
 unsigned int ui_Right_Line_Tracker_Dark;
 unsigned int ui_Right_Line_Tracker_Light;
 unsigned int ui_Line_Tracker_Tolerance;
-unsigned int TimeTurning = 1;       //should be 1 if not im testing
+unsigned int TimeTurning = 2;       //should be 1 if not im testing
 unsigned int firstEncoderReadRight;
 unsigned int firstEncoderReadLeft;
-unsigned int operationPhase = 1;    //should be 1 if not im testing
+unsigned int operationPhase = 5;    //should be 1 if not im testing
 unsigned int timesatthree = 0;
 unsigned int prevDirection; // 0 for left, 1 for right
 unsigned int ui_Best_Left_Encoder_Position = 0;
@@ -285,7 +285,7 @@ void loop()
         Ping();
         servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
         servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-        servo_ArmMotor.write(ci_Arm_Servo_Middle);
+        servo_ArmMotor.write(ci_Arm_Servo_Retracted);
         servo_GripMotor.write(ci_Grip_Motor_Closed);
         //encoder_LeftMotor.zero();
         //encoder_RightMotor.zero();
@@ -431,6 +431,11 @@ void loop()
 
           else if (operationPhase == 5) {
             //Scan for the pedestal
+            //Zeroing the encoders
+            encoder_LeftMotor.zero();
+            encoder_RightMotor.zero();
+            
+            
             //First Turn
             while (TimeTurning == 2 && ((firstEncoderReadRight + 150) >= encoder_RightMotor.getRawPosition())) {
               servo_RightMotor.write(1675);
@@ -446,6 +451,13 @@ void loop()
                 TimeTurning = 3;
               }
             }
+            
+            //Diagnostic
+            Serial.print("Best Encoder Right: ");
+            Serial.println(ui_Best_Right_Encoder_Position);
+            Serial.print("Best Encoder Left: ");
+            Serial.println(ui_Best_Left_Encoder_Position);
+            
             servo_RightMotor.write(1500);
             servo_LeftMotor.write(1500);
 
@@ -463,6 +475,15 @@ void loop()
                 TimeTurning = 4;
               }
             }
+            
+            
+            //Diagnostic
+            Serial.print("Best Encoder Right: ");
+            Serial.println(ui_Best_Right_Encoder_Position);
+            Serial.print("Best Encoder Left: ");
+            Serial.println(ui_Best_Left_Encoder_Position);
+            
+            
             servo_RightMotor.write(1500);
             servo_LeftMotor.write(1500);
 
@@ -482,6 +503,13 @@ void loop()
                 TimeTurning = 5;
               }
             }
+            
+            //Diagnostic
+            Serial.print("Best Encoder Right: ");
+            Serial.println(ui_Best_Right_Encoder_Position);
+            Serial.print("Best Encoder Left: ");
+            Serial.println(ui_Best_Left_Encoder_Position);
+            
             servo_RightMotor.write(1500);
             servo_LeftMotor.write(1500);
 
@@ -500,6 +528,15 @@ void loop()
                 TimeTurning = 6;
               }
             }
+            
+            
+            //Diagnostic
+            Serial.print("Best Encoder Right: ");
+            Serial.println(ui_Best_Right_Encoder_Position);
+            Serial.print("Best Encoder Left: ");
+            Serial.println(ui_Best_Left_Encoder_Position);
+            
+            
             servo_RightMotor.write(1500);
             servo_LeftMotor.write(1500);
             operationPhase++;
@@ -513,6 +550,7 @@ void loop()
                 TimeTurning = 7;
                 servo_RightMotor.write(1500);
                 servo_LeftMotor.write(1500);
+                Serial.println(encoder_RightMotor.getRawPosition());
               }
             }
             while ((TimeTurning == 7 && (firstEncoderReadLeft <= ui_Best_Left_Encoder_Position))) {
@@ -1008,7 +1046,7 @@ void trackLine(unsigned int ui_Left_On_Yellow, unsigned int ui_Middle_On_Yellow,
       //If L
       else if (ui_Left_On_Yellow) {
         Serial.println("Left");
-        servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed);
+        servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed+50);
         servo_LeftMotor.writeMicroseconds(1500);
         prevDirection = 0;
         //return 1;
