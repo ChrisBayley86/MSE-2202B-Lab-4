@@ -692,8 +692,8 @@ void loop()
             servo_RightMotor.write(1000);
             Serial.println("FUCK YES!!!!!!");
             if ((millis() - previousTimeMeasurement) >= 1000) {
-              servo_LeftMotor.write(1000);
-              servo_RightMotor.write(1000);
+              servo_LeftMotor.write(1500);
+              servo_RightMotor.write(1500);
             }
 
           }
