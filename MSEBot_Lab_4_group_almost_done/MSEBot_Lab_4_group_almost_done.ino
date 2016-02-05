@@ -291,7 +291,8 @@ void loop()
         //encoder_RightMotor.zero();
         ui_Mode_Indicator_Index = 0;
 
-
+        //servo_LeftMotor.write(1650);
+        //servo_RightMotor.write(1650);
 
 
 
@@ -550,10 +551,10 @@ void loop()
 
             //Serial.println( (ul_Echo_Time / 24) );
 
-            if (((ul_Echo_Time / 24) < 10) && (ul_Echo_Time/24)) {
+            if (((ul_Echo_Time / 24) < 10) && (ul_Echo_Time / 24)) {
               servo_LeftMotor.write(1500);
               servo_RightMotor.write(1500);
-              
+
               //Arm & Grip commands
               servo_GripMotor.write(ci_Grip_Motor_Open);
               moveArmSlowly(ci_Arm_Servo_Scan, ci_Arm_Servo_Extended);
@@ -562,9 +563,10 @@ void loop()
               //Updates the encoder values.
               firstEncoderReadLeft = encoder_LeftMotor.getRawPosition();
               firstEncoderReadRight = encoder_RightMotor.getRawPosition();
-              
+
+              previousTimeMeasurement = millis();
               //Essential to get OP 8 to work
-              TimeTurning = 8;
+              //TimeTurning = 8;
               operationPhase++;
             }
 
@@ -576,15 +578,49 @@ void loop()
 
           }
           else if (operationPhase == 8) {//Turn and then follow the line to the block
-            // while ((TimeTurning == 8 && ((firstEncoderReadLeft + 800) >= encoder_LeftMotor.getRawPosition()))) {
-
-            // }
-            servo_RightMotor.write(1500);
-            servo_LeftMotor.write(1700);
-            if (ui_Left_On_Yellow || ui_Middle_On_Yellow || ui_Right_On_Yellow) {
-              TimeTurning = 9;
+              while ((TimeTurning == 8 && ((firstEncoderReadRight + 400) >= encoder_RightMotor.getRawPosition()))) {
+                servo_RightMotor.write(1400);
+                servo_LeftMotor.write(1400);
+              }
+              firstEncoderReadLeft = encoder_LeftMotor.getRawPosition();
+              firstEncoderReadRight = encoder_RightMotor.getRawPosition();
+              while ((TimeTurning == 8 && ((firstEncoderReadLeft + 800) >= encoder_RightMotor.getRawPosition()))) {
+                servo_RightMotor.write(1500);
+                servo_LeftMotor.write(1700);
+              }
               operationPhase++;
+              TimeTurning++;
+
+
+
+
+
+
+            /*if (TimeTurning == 8) {
+              if (!(ui_Left_On_Yellow || ui_Middle_On_Yellow || ui_Right_On_Yellow)) {
+                servo_RightMotor.write(1350);
+                servo_LeftMotor.write(1350);
+
+              }
+              servo_RightMotor.write(1500);
+              servo_LeftMotor.write(1500);
+              firstEncoderReadLeft = encoder_LeftMotor.getRawPosition();
             }
+            while ((TimeTurning == 8 && ((firstEncoderReadLeft + 800) >= encoder_LeftMotor.getRawPosition()))) {
+
+              //
+              servo_RightMotor.write(1500);
+              servo_LeftMotor.write(1700);
+              //Serial.println( millis() - previousTimeMeasurement );
+
+              //if (ui_Left_On_Yellow || ui_Middle_On_Yellow || ui_Right_On_Yellow) {
+              if ((millis() - previousTimeMeasurement) >= 1200) {
+                TimeTurning = 9;
+                operationPhase++;
+              }
+            }
+            }
+            */
           }
           else if (operationPhase == 9) {
             trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
@@ -613,8 +649,10 @@ void loop()
           }
           else if (operationPhase == 11) {
             Ping();
-            servo_LeftMotor.write(1600);
-            servo_RightMotor.write(1600);
+            servo_LeftMotor.write(1500);
+            servo_RightMotor.write(1500);
+            servo_LeftMotor.write(1650);
+            servo_RightMotor.write(1650);
             if ((ul_Echo_Time / 24) < 15) {
               servo_LeftMotor.write(1500);
               servo_RightMotor.write(1500);
@@ -628,10 +666,10 @@ void loop()
             operationPhase++;
           }
 
-          else if (operationPhase == 13) { //Celebration
-            servo_LeftMotor.write(2000);
+          /*else if (operationPhase == 13) { //Celebration
+            servo_LeftMotor.write(1000);
             servo_RightMotor.write(1000);
-          }
+          }*/
 
 
 #ifdef DEBUG_MOTORS
