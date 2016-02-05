@@ -127,10 +127,10 @@ unsigned int ui_Middle_Line_Tracker_Light;
 unsigned int ui_Right_Line_Tracker_Dark;
 unsigned int ui_Right_Line_Tracker_Light;
 unsigned int ui_Line_Tracker_Tolerance;
-unsigned int TimeTurning = 1;       //should be 1 if not im testing
+unsigned int TimeTurning = 9;       //should be 1 if not im testing
 unsigned int firstEncoderReadRight;
 unsigned int firstEncoderReadLeft;
-unsigned int operationPhase = 1;    //should be 1 if not im testing
+unsigned int operationPhase = 9;    //should be 1 if not im testing
 unsigned int timesatthree = 0;
 unsigned int prevDirection; // 0 for left, 1 for right
 unsigned int ui_Best_Left_Encoder_Position = 0;
@@ -285,7 +285,7 @@ void loop()
         Ping();
         servo_LeftMotor.writeMicroseconds(ci_Left_Motor_Stop);
         servo_RightMotor.writeMicroseconds(ci_Right_Motor_Stop);
-        servo_ArmMotor.write(ci_Arm_Servo_Retracted);
+        servo_ArmMotor.write(ci_Arm_Servo_Middle);
         servo_GripMotor.write(ci_Grip_Motor_Closed);
         //encoder_LeftMotor.zero();
         //encoder_RightMotor.zero();
@@ -419,7 +419,7 @@ void loop()
             if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow)) {
               timesatthree++;
             }
-            if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) && (timesatthree > 5)) {
+            if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) && (timesatthree > 9)) {
               servo_LeftMotor.write(1500);
               servo_RightMotor.write(1500);
               operationPhase++;
@@ -559,7 +559,7 @@ void loop()
               servo_GripMotor.write(ci_Grip_Motor_Open);
               moveArmSlowly(ci_Arm_Servo_Scan, ci_Arm_Servo_Extended);
               servo_GripMotor.write(ci_Grip_Motor_Closed);
-              moveArmSlowly(ci_Arm_Servo_Extended, ci_Arm_Servo_Retracted);
+              moveArmSlowly(ci_Arm_Servo_Extended, ci_Arm_Servo_Middle);
               //Updates the encoder values.
               firstEncoderReadLeft = encoder_LeftMotor.getRawPosition();
               firstEncoderReadRight = encoder_RightMotor.getRawPosition();
@@ -579,7 +579,7 @@ void loop()
           }
           else if (operationPhase == 8) {//Turn and then follow the line to the block
 
-            
+
             while ((TimeTurning == 8 && ((firstEncoderReadRight - 400) <= encoder_RightMotor.getRawPosition()))) {
               servo_RightMotor.write(1400);
               servo_LeftMotor.write(1400);
@@ -596,7 +596,7 @@ void loop()
             while ((TimeTurning == 8 && ((firstEncoderReadLeft + 800) >= encoder_LeftMotor.getRawPosition()))) {
               servo_RightMotor.write(1500);
               servo_LeftMotor.write(1700);
-              
+
               Serial.print("During: L "); Serial.println(firstEncoderReadLeft);
               Serial.print("During: R "); Serial.println(firstEncoderReadRight);
               Serial.print("Raw: L "); Serial.println(encoder_LeftMotor.getRawPosition());
@@ -663,20 +663,24 @@ void loop()
           }
           else if (operationPhase == 11) {
             Ping();
-            servo_LeftMotor.write(1500);
-            servo_RightMotor.write(1500);
             servo_LeftMotor.write(1650);
             servo_RightMotor.write(1650);
-            if ((ul_Echo_Time / 24) < 15) {
+            Serial.print("Echo cm: "); Serial.println(ul_Echo_Time / 24);
+            if (((ul_Echo_Time / 24) < 10) && ul_Echo_Time) {
               servo_LeftMotor.write(1500);
               servo_RightMotor.write(1500);
+              operationPhase++;
             }
-            operationPhase++;
+            previousTimeMeasurement = millis();
           }
           else if (operationPhase == 12) {
-
-            moveArmSlowly(ci_Arm_Servo_Retracted, ci_Arm_Servo_Extended);
-            servo_GripMotor.write(ci_Grip_Motor_Open);
+            servo_LeftMotor.write(1500);
+            servo_RightMotor.write(1500);
+            moveArmSlowly(ci_Arm_Servo_Middle, ci_Arm_Servo_Extended);
+            if ((millis() - previousTimeMeasurement) >= 1000) {
+              Serial.println("Fuck you, Bald man.");
+              servo_GripMotor.write(ci_Grip_Motor_Open);
+            }
             operationPhase++;
           }
 
