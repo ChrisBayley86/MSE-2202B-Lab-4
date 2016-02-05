@@ -385,8 +385,7 @@ void loop()
               timesatthree++;
             }
             if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) && (timesatthree > 50)) {
-              servo_LeftMotor.write(1500);
-              servo_RightMotor.write(1500);
+              stop();
               operationPhase++;
             }
           }
@@ -408,8 +407,7 @@ void loop()
             }
             TimeTurning = 2;
             operationPhase++;
-            servo_RightMotor.write(1500);
-            servo_LeftMotor.write(1500);
+            stop();
             timesatthree = 0;
           }
 
@@ -420,8 +418,7 @@ void loop()
               timesatthree++;
             }
             if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) && (timesatthree > 9)) {
-              servo_LeftMotor.write(1500);
-              servo_RightMotor.write(1500);
+              stop();
               operationPhase++;
               firstEncoderReadRight = encoder_RightMotor.getRawPosition();
               firstEncoderReadLeft = encoder_LeftMotor.getRawPosition();
@@ -434,8 +431,8 @@ void loop()
             //Zeroing the encoders
             //encoder_LeftMotor.zero();
             //encoder_RightMotor.zero();
-            
-            
+
+
             //First Turn
             while (TimeTurning == 2 && ((firstEncoderReadRight + 150) >= encoder_RightMotor.getRawPosition())) {
               servo_RightMotor.write(1600);
@@ -447,7 +444,7 @@ void loop()
                 ui_Best_Right_Encoder_Position = encoder_RightMotor.getRawPosition();
                 //Serial.print("WHY YOU NO WORK");
               }
-              
+
               /*
               if ((firstEncoderReadRight + 150) <= encoder_RightMotor.getRawPosition()) {
                 TimeTurning = 3;
@@ -456,16 +453,15 @@ void loop()
             }
             //Should only run after the encoder difference is greater than 150
             TimeTurning = 3;
-            
-            
+
+
             //Diagnostic
             ////Serial.print("Best Encoder Right: ");
             //Serial.println(ui_Best_Right_Encoder_Position);
             //Serial.print("Best Encoder Left: ");
             //Serial.println(ui_Best_Left_Encoder_Position);
-            
-            servo_RightMotor.write(1500);
-            servo_LeftMotor.write(1500);
+
+            stop();
 
             //Second Turn
             while ((TimeTurning == 3 && (firstEncoderReadRight <= encoder_RightMotor.getRawPosition()))) {
@@ -481,17 +477,16 @@ void loop()
                 TimeTurning = 4;
               }
             }
-            
-            
+
+
             //Diagnostic
             //Serial.print("Best Encoder Right: ");
             //Serial.println(ui_Best_Right_Encoder_Position);
             //Serial.print("Best Encoder Left: ");
             //Serial.println(ui_Best_Left_Encoder_Position);
-            
-            
-            servo_RightMotor.write(1500);
-            servo_LeftMotor.write(1500);
+
+
+            stop();
 
 
             //Third Turn
@@ -509,15 +504,14 @@ void loop()
                 TimeTurning = 5;
               }
             }
-            
+
             //Diagnostic
             //Serial.print("Best Encoder Right: ");
             //Serial.println(ui_Best_Right_Encoder_Position);
             //Serial.print("Best Encoder Left: ");
             //Serial.println(ui_Best_Left_Encoder_Position);
-            
-            servo_RightMotor.write(1500);
-            servo_LeftMotor.write(1500);
+
+            stop();
 
             //Fourth Turn
             while ((TimeTurning == 5 && (firstEncoderReadLeft <= encoder_LeftMotor.getRawPosition()))) {
@@ -534,15 +528,15 @@ void loop()
                 TimeTurning = 6;
               }
             }
-            
-            
+
+
             //Diagnostic
             //Serial.print("Best Encoder Right: ");
             //Serial.println(ui_Best_Right_Encoder_Position);
             //Serial.print("Best Encoder Left: ");
             //Serial.println(ui_Best_Left_Encoder_Position);
-            
-            
+
+
             servo_RightMotor.write(1500);
             servo_LeftMotor.write(1500);
             operationPhase++;
@@ -554,8 +548,7 @@ void loop()
               servo_LeftMotor.write(1500);
               if (encoder_RightMotor.getRawPosition() >= ui_Best_Right_Encoder_Position) {
                 TimeTurning = 7;
-                servo_RightMotor.write(1500);
-                servo_LeftMotor.write(1500);
+                stop();
                 //Serial.println(encoder_RightMotor.getRawPosition());
               }
             }
@@ -564,11 +557,10 @@ void loop()
               servo_LeftMotor.write(1600);
               if (encoder_LeftMotor.getRawPosition() >= ui_Best_Left_Encoder_Position) {
                 //TimeTurning = 8;
-                servo_RightMotor.write(1500);
-                servo_LeftMotor.write(1500);
+                stop();
               }
-            } 
-            
+            }
+
             //Serial.print("Best Encoder Right: ");
             //Serial.println(ui_Best_Right_Encoder_Position);
             //Serial.print("Best Encoder Left: ");
@@ -597,8 +589,7 @@ void loop()
             //Serial.println( (ul_Echo_Time / 24) );
 
             if (((ul_Echo_Time / 24) < 10) && (ul_Echo_Time / 24)) {
-              servo_LeftMotor.write(1500);
-              servo_RightMotor.write(1500);
+              stop();
 
               //Arm & Grip commands
               servo_GripMotor.write(ci_Grip_Motor_Open);
@@ -687,8 +678,7 @@ void loop()
               timesatthree++;
             }
             if ((ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) && (timesatthree > 30)) {
-              servo_LeftMotor.write(1500);
-              servo_RightMotor.write(1500);
+              stop();
               operationPhase++;
               firstEncoderReadRight = encoder_RightMotor.getRawPosition();
             }
@@ -700,8 +690,7 @@ void loop()
                 servo_LeftMotor.write(1500);
               }
             }
-            servo_RightMotor.write(1500);
-            servo_LeftMotor.write(1500);
+            stop();
             TimeTurning = 10;
             operationPhase++;
             timesatthree = 0;
@@ -712,15 +701,13 @@ void loop()
             servo_RightMotor.write(1650);
             //Serial.print("Echo cm: "); //Serial.println(ul_Echo_Time / 24);
             if (((ul_Echo_Time / 24) < 10) && ul_Echo_Time) {
-              servo_LeftMotor.write(1500);
-              servo_RightMotor.write(1500);
+              stop();
               operationPhase++;
             }
             previousTimeMeasurement = millis();
           }
           else if (operationPhase == 12) {
-            servo_LeftMotor.write(1500);
-            servo_RightMotor.write(1500);
+            stop();
             moveArmSlowly(ci_Arm_Servo_Middle, ci_Arm_Servo_Extended);
             if ((millis() - previousTimeMeasurement) >= 1000) {
               //Serial.println("Fuck you, Bald man.");
@@ -743,8 +730,7 @@ void loop()
               Serial.println("FUCK YES!!!!!!");
               operationPhase++;
             }
-            servo_LeftMotor.write(1500);
-            servo_RightMotor.write(1500);
+            stop();
 
           }
           else if (operationPhase == 14) {
@@ -1053,7 +1039,7 @@ void trackLine(unsigned int ui_Left_On_Yellow, unsigned int ui_Middle_On_Yellow,
       //If L
       else if (ui_Left_On_Yellow) {
         Serial.println("Left");
-        servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed+50);
+        servo_RightMotor.writeMicroseconds(ui_Right_Motor_Speed + 50);
         servo_LeftMotor.writeMicroseconds(1500);
         prevDirection = 0;
         //return 1;
@@ -1094,4 +1080,9 @@ void moveArmSlowly(int initialPosition, int finalPosition) {
       delay(20);
     }
   }
+}
+
+void stop() {
+  servo_LeftMotor.writeMicroseconds(1500);
+  servo_RightMotor.writeMicroseconds(1500);
 }
