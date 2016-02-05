@@ -573,12 +573,6 @@ void loop()
 
             Ping();
             //int distance = (ul_Echo_Time / 24);
-
-            /*
-            Serial.print("Echo distance in cm: ");
-                        Serial.println( (ul_Echo_Time / 24) );
-                        Serial.print("Loop condition 1: ");
-                        Serial.println( ( (ul_Echo_Time / 24) > 10 ) );*/
             servo_LeftMotor.write(1600);
             servo_RightMotor.write(1600);
             //Ping();
@@ -641,36 +635,6 @@ void loop()
             operationPhase++;
             TimeTurning++;
 
-
-
-
-
-
-            /*if (TimeTurning == 8) {
-              if (!(ui_Left_On_Yellow || ui_Middle_On_Yellow || ui_Right_On_Yellow)) {
-                servo_RightMotor.write(1350);
-                servo_LeftMotor.write(1350);
-
-              }
-              servo_RightMotor.write(1500);
-              servo_LeftMotor.write(1500);
-              firstEncoderReadLeft = encoder_LeftMotor.getRawPosition();
-            }
-            while ((TimeTurning == 8 && ((firstEncoderReadLeft + 800) >= encoder_LeftMotor.getRawPosition()))) {
-
-              //
-              servo_RightMotor.write(1500);
-              servo_LeftMotor.write(1700);
-              //Serial.println( millis() - previousTimeMeasurement );
-
-              //if (ui_Left_On_Yellow || ui_Middle_On_Yellow || ui_Right_On_Yellow) {
-              if ((millis() - previousTimeMeasurement) >= 1200) {
-                TimeTurning = 9;
-                operationPhase++;
-              }
-            }
-            }
-            */
           }
           else if (operationPhase == 9) {
             trackLine(ui_Left_On_Yellow, ui_Middle_On_Yellow, ui_Right_On_Yellow);
