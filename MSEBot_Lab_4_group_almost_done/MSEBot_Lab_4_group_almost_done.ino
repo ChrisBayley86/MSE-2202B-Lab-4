@@ -127,10 +127,10 @@ unsigned int ui_Middle_Line_Tracker_Light;
 unsigned int ui_Right_Line_Tracker_Dark;
 unsigned int ui_Right_Line_Tracker_Light;
 unsigned int ui_Line_Tracker_Tolerance;
-unsigned int TimeTurning = 9;       //should be 1 if not im testing
+unsigned int TimeTurning = 1;       //should be 1 if not im testing
 unsigned int firstEncoderReadRight;
 unsigned int firstEncoderReadLeft;
-unsigned int operationPhase = 9;    //should be 1 if not im testing
+unsigned int operationPhase = 1;    //should be 1 if not im testing
 unsigned int timesatthree = 0;
 unsigned int prevDirection; // 0 for left, 1 for right
 unsigned int ui_Best_Left_Encoder_Position = 0;
@@ -324,7 +324,7 @@ void loop()
       {
         unsigned int pastCondition = 0;
         unsigned int currentCondition = 0;
-        unsigned int previousTimeMeasurement = millis();
+        unsigned int previousTimeMeasurement; //= millis();
 
         unsigned int ui_Left_On_Yellow;
         unsigned int ui_Middle_On_Yellow;
@@ -683,6 +683,7 @@ void loop()
             }
             operationPhase++;
             delay(500);
+            moveArmSlowly(ci_Arm_Servo_Extended, ci_Arm_Servo_Retracted);
             previousTimeMeasurement = millis();
           }
 
@@ -692,7 +693,6 @@ void loop()
             servo_RightMotor.write(1000);
             Serial.println(millis() - previousTimeMeasurement);
             while ((millis() - previousTimeMeasurement) <= 500) {
-
               servo_LeftMotor.write(1000);
               servo_RightMotor.write(1000);
               Serial.println("FUCK YES!!!!!!");
