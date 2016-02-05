@@ -137,6 +137,7 @@ unsigned int ui_Best_Left_Encoder_Position = 0;
 unsigned int ui_Best_Right_Encoder_Position = 0;
 unsigned int ui_last_best_light_reading = 100;
 unsigned int ui_current_light_reading = 0;
+unsigned int ui_turnVar = 0;
 
 bool turnLeftAtFirstStop = false;
 bool activatedOnce = false;
@@ -406,10 +407,15 @@ void loop()
           else if (operationPhase == 3) {
             if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
               Serial.println("d");
-              while ((TimeTurning == 1 && ((firstEncoderReadRight + 750) >= encoder_RightMotor.getRawPosition()))) {
+              while ((TimeTurning == 1 && ((firstEncoderReadRight + 700) >= encoder_RightMotor.getRawPosition()))) {
+                readLineTrackers();
                 Serial.println("e");
-                servo_RightMotor.writeMicroseconds(1600);
-                servo_LeftMotor.writeMicroseconds(1500);
+                servo_RightMotor.writeMicroseconds(1650);
+                servo_LeftMotor.writeMicroseconds(1450);
+                if (ui_Left_On_Yellow && ((firstEncoderReadRight + 400) <= encoder_RightMotor.getRawPosition())) {
+                  Serial.println("eEeEeEeEeEeEeEeEeE");
+                  break;
+                }
               }
             }
             Serial.println("f");
@@ -659,10 +665,21 @@ void loop()
             //Serial.print("Upper left bound: "); //Serial.println(firstEncoderReadLeft + 800);
             //Serial.print((firstEncoderReadLeft + 800) >= encoder_RightMotor.getRawPosition());
             Serial.println("H");
-            while ((TimeTurning == 8 && ((firstEncoderReadLeft + 800) >= encoder_LeftMotor.getRawPosition()))) {
+            if (ui_Best_Left_Encoder_Position >= ui_Best_Right_Encoder_Position) {
+              ui_turnVar = 700;
+              Serial.println("H");
+            }
+            else {
+              ui_turnVar = 850;
+              Serial.println("H'");
+            }
+            while ((TimeTurning == 8 && ((firstEncoderReadLeft + ui_turnVar) >= encoder_LeftMotor.getRawPosition()))) {
+              readLineTrackers();
               servo_RightMotor.writeMicroseconds(1500);
               servo_LeftMotor.writeMicroseconds(1700);
-
+              if (ui_Right_On_Yellow && ui_Middle_On_Yellow) {
+                break;
+              }
               //Serial.print("During: L "); //Serial.println(firstEncoderReadLeft);
               //Serial.print("During: R "); //Serial.println(firstEncoderReadRight);
               //Serial.print("Raw: L "); //Serial.println(encoder_LeftMotor.getRawPosition());
@@ -696,10 +713,21 @@ void loop()
           else if (operationPhase == 10) {
             if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
               Serial.println("M");
-              while ((TimeTurning == 9 && ((firstEncoderReadRight + 800) >= encoder_RightMotor.getRawPosition()))) {
-                servo_RightMotor.writeMicroseconds(1700);
-                servo_LeftMotor.writeMicroseconds(1500);
-                Serial.println("N");
+              while (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
+                servo_RightMotor.writeMicroseconds(1400);
+                servo_LeftMotor.writeMicroseconds(1400);
+                readLineTrackers();
+              }
+
+            }
+            stop();
+            while ((TimeTurning == 9 && ((firstEncoderReadRight + 800) >= encoder_RightMotor.getRawPosition()))) {
+              readLineTrackers();
+              servo_RightMotor.writeMicroseconds(1750);
+              servo_LeftMotor.writeMicroseconds(1500);
+              Serial.println("N");
+              if (ui_Left_On_Yellow && ui_Middle_On_Yellow) {
+                break;
               }
             }
             stop();
@@ -712,9 +740,11 @@ void loop()
 
 
           else if (operationPhase == 11) {
+
+
             Ping();
             servo_LeftMotor.writeMicroseconds(1650);
-            servo_RightMotor.writeMicroseconds(1650);
+            servo_RightMotor.writeMicroseconds(1675);
             Serial.println("P");
             //Serial.print("Echo cm: "); //Serial.println(ul_Echo_Time / 24);
             if (((ul_Echo_Time / 24) < 10) && ul_Echo_Time) {
