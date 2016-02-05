@@ -682,12 +682,22 @@ void loop()
               servo_GripMotor.write(ci_Grip_Motor_Open);
             }
             operationPhase++;
+            delay(500);
+            previousTimeMeasurement = millis();
           }
 
-          /*else if (operationPhase == 13) { //Celebration
+          else if (operationPhase == 13) { //Celebration
+
             servo_LeftMotor.write(1000);
             servo_RightMotor.write(1000);
-          }*/
+            Serial.println("FUCK YES!!!!!!");
+            if ((millis() - previousTimeMeasurement) >= 1000) {
+              servo_LeftMotor.write(1000);
+              servo_RightMotor.write(1000);
+            }
+
+          }
+
 
 
 #ifdef DEBUG_MOTORS
