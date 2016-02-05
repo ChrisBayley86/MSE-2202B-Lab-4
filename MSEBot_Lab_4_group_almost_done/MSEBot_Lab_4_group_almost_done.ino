@@ -690,12 +690,21 @@ void loop()
 
             servo_LeftMotor.write(1000);
             servo_RightMotor.write(1000);
-            Serial.println("FUCK YES!!!!!!");
-            if ((millis() - previousTimeMeasurement) >= 1000) {
-              servo_LeftMotor.write(1500);
-              servo_RightMotor.write(1500);
-            }
+            Serial.println(millis() - previousTimeMeasurement);
+            while ((millis() - previousTimeMeasurement) <= 500) {
 
+              servo_LeftMotor.write(1000);
+              servo_RightMotor.write(1000);
+              Serial.println("FUCK YES!!!!!!");
+              operationPhase++;
+            }
+            servo_LeftMotor.write(1500);
+            servo_RightMotor.write(1500);
+
+          }
+          else if (operationPhase == 14) {
+            servo_LeftMotor.write(1000);
+            servo_RightMotor.write(2000);
           }
 
 
