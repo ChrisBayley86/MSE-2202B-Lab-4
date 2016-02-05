@@ -457,7 +457,7 @@ void loop()
             //First Turn
             while (TimeTurning == 2 && ((firstEncoderReadRight + 200) >= encoder_RightMotor.getRawPosition())) {
               Serial.println("k");
-              servo_RightMotor.writeMicroseconds(1600);
+              servo_RightMotor.writeMicroseconds(1625);
               servo_LeftMotor.writeMicroseconds(1500);
               ////Serial.println("Loop 1");
               ui_current_light_reading = analogRead(ci_Light_Sensor);
@@ -465,6 +465,7 @@ void loop()
                 Serial.println("l");
                 ui_last_best_light_reading = ui_current_light_reading;
                 ui_Best_Right_Encoder_Position = encoder_RightMotor.getRawPosition();
+                TimeTurning = 6;
                 //Serial.print("WHY YOU NO WORK");
               }
 
@@ -497,6 +498,7 @@ void loop()
                 Serial.println("o");
                 ui_last_best_light_reading = ui_current_light_reading;
                 ui_Best_Right_Encoder_Position = encoder_RightMotor.getRawPosition();
+                TimeTurning = 6;
               }
               if (firstEncoderReadRight >= encoder_RightMotor.getRawPosition()) {
                 Serial.println("p");
@@ -527,6 +529,7 @@ void loop()
                 ui_Best_Left_Encoder_Position = encoder_LeftMotor.getRawPosition();
                 //Serial.println(ui_Best_Left_Encoder_Position);
                 Serial.println("r");
+                TimeTurning = 6;
               }
               if ((firstEncoderReadLeft + 150) <= encoder_LeftMotor.getRawPosition()) {
                 TimeTurning = 5;
@@ -554,6 +557,7 @@ void loop()
                 ui_Best_Left_Encoder_Position = encoder_LeftMotor.getRawPosition();
                 //Serial.println(ui_Best_Left_Encoder_Position);
                 Serial.println("u");
+                TimeTurning = 6;
               }
               if (firstEncoderReadLeft >= encoder_LeftMotor.getRawPosition()) {
                 TimeTurning = 6;
@@ -681,11 +685,11 @@ void loop()
               ui_turnVar = 850;
               Serial.println("H'");
             }
-            while ((TimeTurning == 8 && ((firstEncoderReadLeft + 1000) >= encoder_LeftMotor.getRawPosition()))) {
+            while ((TimeTurning == 8 && ((firstEncoderReadLeft + 600) >= encoder_LeftMotor.getRawPosition()))) {
               readLineTrackers();
               servo_RightMotor.writeMicroseconds(1500);
               servo_LeftMotor.writeMicroseconds(1700);
-              if (ui_Right_On_Yellow && ui_Middle_On_Yellow) {
+              if (ui_Right_On_Yellow || ui_Middle_On_Yellow) {
                 break;
               }
               //Serial.print("During: L "); //Serial.println(firstEncoderReadLeft);
@@ -721,7 +725,7 @@ void loop()
           else if (operationPhase == 10) {
             if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
               Serial.println("M");
-              while ((firstEncoderReadRight - 350) <= encoder_RightMotor.getRawPosition()) {
+              while ((firstEncoderReadRight - 600) <= encoder_RightMotor.getRawPosition()) {
                 servo_RightMotor.writeMicroseconds(1400);
                 servo_LeftMotor.writeMicroseconds(1400);
                 
@@ -731,15 +735,7 @@ void loop()
             }
             stop();
             firstEncoderReadRight = encoder_RightMotor.getRawPosition();
-            while ((TimeTurning == 9 && ((firstEncoderReadRight + 800) >= encoder_RightMotor.getRawPosition()))) {
-              readLineTrackers();
-              servo_RightMotor.writeMicroseconds(1750);
-              servo_LeftMotor.writeMicroseconds(1350);
-              Serial.println("N");
-              if (ui_Left_On_Yellow || ui_Middle_On_Yellow || ui_Right_On_Yellow) {
-                break;
-              }
-            }
+            
             stop();
             TimeTurning = 10;
             operationPhase++;
@@ -754,7 +750,7 @@ void loop()
 
             Ping();
             servo_LeftMotor.writeMicroseconds(1600);
-            servo_RightMotor.writeMicroseconds(1675);
+            servo_RightMotor.writeMicroseconds(1700);
             Serial.println("P");
             //Serial.print("Echo cm: "); //Serial.println(ul_Echo_Time / 24);
             if (((ul_Echo_Time / 24) < 10) && ul_Echo_Time) {
@@ -773,7 +769,7 @@ void loop()
             moveArmSlowly(ci_Arm_Servo_Middle, ci_Arm_Servo_Extended);
             Serial.println("S");
             if ((millis() - previousTimeMeasurement) >= 1000) {
-              //Serial.println("Fuck you, Bald man.");
+              //Serial.println("Fuck ");
               servo_GripMotor.write(ci_Grip_Motor_Open);
               Serial.println("T");
             }
