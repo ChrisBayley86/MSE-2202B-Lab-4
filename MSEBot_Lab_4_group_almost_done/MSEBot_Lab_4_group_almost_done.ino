@@ -447,11 +447,16 @@ void loop()
                 ui_Best_Right_Encoder_Position = encoder_RightMotor.getRawPosition();
                 //Serial.print("WHY YOU NO WORK");
               }
-
+              
+              /*
               if ((firstEncoderReadRight + 150) <= encoder_RightMotor.getRawPosition()) {
                 TimeTurning = 3;
               }
+              */
             }
+            //Should only run after the encoder difference is greater than 150
+            TimeTurning = 3;
+            
             
             //Diagnostic
             ////Serial.print("Best Encoder Right: ");
