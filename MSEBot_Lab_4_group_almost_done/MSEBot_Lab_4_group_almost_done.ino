@@ -402,7 +402,7 @@ void loop()
           else if (operationPhase == 3) {
             if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
               while ((TimeTurning == 1 && ((firstEncoderReadRight + 750) >= encoder_RightMotor.getRawPosition()))) {
-                servo_RightMotor.write(1700);
+                servo_RightMotor.write(1600);
                 servo_LeftMotor.write(1500);
               }
             }
@@ -438,7 +438,7 @@ void loop()
             
             //First Turn
             while (TimeTurning == 2 && ((firstEncoderReadRight + 150) >= encoder_RightMotor.getRawPosition())) {
-              servo_RightMotor.write(1675);
+              servo_RightMotor.write(1600);
               servo_LeftMotor.write(1500);
               ////Serial.println("Loop 1");
               ui_current_light_reading = analogRead(ci_Light_Sensor);
