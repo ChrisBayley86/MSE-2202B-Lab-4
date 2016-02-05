@@ -401,8 +401,8 @@ void loop()
           else if (operationPhase == 3) {
             if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
               while ((TimeTurning == 1 && ((firstEncoderReadRight + 750) >= encoder_RightMotor.getRawPosition()))) {
-                servo_RightMotor.write(1600);
-                servo_LeftMotor.write(1500);
+                servo_RightMotor.writeMicroseconds(1600);
+                servo_LeftMotor.writeMicroseconds(1500);
               }
             }
             TimeTurning = 2;
@@ -435,8 +435,8 @@ void loop()
 
             //First Turn
             while (TimeTurning == 2 && ((firstEncoderReadRight + 150) >= encoder_RightMotor.getRawPosition())) {
-              servo_RightMotor.write(1600);
-              servo_LeftMotor.write(1500);
+              servo_RightMotor.writeMicroseconds(1600);
+              servo_LeftMotor.writeMicroseconds(1500);
               ////Serial.println("Loop 1");
               ui_current_light_reading = analogRead(ci_Light_Sensor);
               if (((ui_current_light_reading < ci_Light_Sensor_Threshold) ) || (ui_last_best_light_reading > ui_current_light_reading) && (ui_current_light_reading != 0) ) {
@@ -465,8 +465,8 @@ void loop()
 
             //Second Turn
             while ((TimeTurning == 3 && (firstEncoderReadRight <= encoder_RightMotor.getRawPosition()))) {
-              servo_RightMotor.write(1350);
-              servo_LeftMotor.write(1500);
+              servo_RightMotor.writeMicroseconds(1350);
+              servo_LeftMotor.writeMicroseconds(1500);
               //Serial.println("Loop 2");
               ui_current_light_reading = analogRead(ci_Light_Sensor);
               if (((ui_current_light_reading < ci_Light_Sensor_Threshold) ) || (ui_last_best_light_reading > ui_current_light_reading) && (ui_current_light_reading != 0)) {
@@ -491,8 +491,8 @@ void loop()
 
             //Third Turn
             while ((TimeTurning == 4 && ((firstEncoderReadLeft + 150) >= encoder_LeftMotor.getRawPosition()))) {
-              servo_RightMotor.write(1500);
-              servo_LeftMotor.write(1600);
+              servo_RightMotor.writeMicroseconds(1500);
+              servo_LeftMotor.writeMicroseconds(1600);
               //Serial.println("Loop 3");
               ui_current_light_reading = analogRead(ci_Light_Sensor);
               if (((ui_current_light_reading < ci_Light_Sensor_Threshold) ) || (ui_last_best_light_reading > ui_current_light_reading) && (ui_current_light_reading != 0)) {
@@ -515,8 +515,8 @@ void loop()
 
             //Fourth Turn
             while ((TimeTurning == 5 && (firstEncoderReadLeft <= encoder_LeftMotor.getRawPosition()))) {
-              servo_RightMotor.write(1500);
-              servo_LeftMotor.write(1350);
+              servo_RightMotor.writeMicroseconds(1500);
+              servo_LeftMotor.writeMicroseconds(1350);
               //Serial.println("Loop 4");
               ui_current_light_reading = analogRead(ci_Light_Sensor);
               if (((ui_current_light_reading < ci_Light_Sensor_Threshold)  ) || (ui_last_best_light_reading > ui_current_light_reading) && (ui_current_light_reading != 0)) {
@@ -537,15 +537,14 @@ void loop()
             //Serial.println(ui_Best_Left_Encoder_Position);
 
 
-            servo_RightMotor.write(1500);
-            servo_LeftMotor.write(1500);
+            stop();
             operationPhase++;
           }
           else if (operationPhase == 6) {
             //Return to the encoder position registered by the sensors of the brightest light
             while ((TimeTurning == 6 && (firstEncoderReadRight <= ui_Best_Right_Encoder_Position))) {
-              servo_RightMotor.write(1600);
-              servo_LeftMotor.write(1500);
+              servo_RightMotor.writeMicroseconds(1600);
+              servo_LeftMotor.writeMicroseconds(1500);
               if (encoder_RightMotor.getRawPosition() >= ui_Best_Right_Encoder_Position) {
                 TimeTurning = 7;
                 stop();
@@ -553,8 +552,8 @@ void loop()
               }
             }
             while ((TimeTurning == 7 && (firstEncoderReadLeft <= ui_Best_Left_Encoder_Position))) {
-              servo_RightMotor.write(1500);
-              servo_LeftMotor.write(1600);
+              servo_RightMotor.writeMicroseconds(1500);
+              servo_LeftMotor.writeMicroseconds(1600);
               if (encoder_LeftMotor.getRawPosition() >= ui_Best_Left_Encoder_Position) {
                 //TimeTurning = 8;
                 stop();
@@ -573,8 +572,8 @@ void loop()
 
             Ping();
             //int distance = (ul_Echo_Time / 24);
-            servo_LeftMotor.write(1600);
-            servo_RightMotor.write(1600);
+            servo_LeftMotor.writeMicroseconds(1600);
+            servo_RightMotor.writeMicroseconds(1600);
             //Ping();
             //Serial.print("Loop condition 2: ");
             //Serial.println( ( (ul_Echo_Time / 24) > 10 ) );
@@ -611,8 +610,8 @@ void loop()
 
 
             while ((TimeTurning == 8 && ((firstEncoderReadRight - 400) <= encoder_RightMotor.getRawPosition()))) {
-              servo_RightMotor.write(1400);
-              servo_LeftMotor.write(1400);
+              servo_RightMotor.writeMicroseconds(1400);
+              servo_LeftMotor.writeMicroseconds(1400);
               Serial.println("Loop 1a");
             }
             encoder_LeftMotor.zero();
@@ -624,8 +623,8 @@ void loop()
             //Serial.print("Upper left bound: "); //Serial.println(firstEncoderReadLeft + 800);
             //Serial.print((firstEncoderReadLeft + 800) >= encoder_RightMotor.getRawPosition());
             while ((TimeTurning == 8 && ((firstEncoderReadLeft + 800) >= encoder_LeftMotor.getRawPosition()))) {
-              servo_RightMotor.write(1500);
-              servo_LeftMotor.write(1700);
+              servo_RightMotor.writeMicroseconds(1500);
+              servo_LeftMotor.writeMicroseconds(1700);
 
               //Serial.print("During: L "); //Serial.println(firstEncoderReadLeft);
               //Serial.print("During: R "); //Serial.println(firstEncoderReadRight);
@@ -650,8 +649,8 @@ void loop()
           else if (operationPhase == 10) {
             if (ui_Left_On_Yellow && ui_Middle_On_Yellow && ui_Right_On_Yellow) {
               while ((TimeTurning == 9 && ((firstEncoderReadRight + 800) >= encoder_RightMotor.getRawPosition()))) {
-                servo_RightMotor.write(1700);
-                servo_LeftMotor.write(1500);
+                servo_RightMotor.writeMicroseconds(1700);
+                servo_LeftMotor.writeMicroseconds(1500);
               }
             }
             stop();
@@ -661,8 +660,8 @@ void loop()
           }
           else if (operationPhase == 11) {
             Ping();
-            servo_LeftMotor.write(1650);
-            servo_RightMotor.write(1650);
+            servo_LeftMotor.writeMicroseconds(1650);
+            servo_RightMotor.writeMicroseconds(1650);
             //Serial.print("Echo cm: "); //Serial.println(ul_Echo_Time / 24);
             if (((ul_Echo_Time / 24) < 10) && ul_Echo_Time) {
               stop();
@@ -685,12 +684,12 @@ void loop()
 
           else if (operationPhase == 13) { //Celebration
 
-            servo_LeftMotor.write(1000);
-            servo_RightMotor.write(1000);
+            servo_LeftMotor.writeMicroseconds(1000);
+            servo_RightMotor.writeMicroseconds(1000);
             //Serial.println(millis() - previousTimeMeasurement);
             while ((millis() - previousTimeMeasurement) <= 500) {
-              servo_LeftMotor.write(1000);
-              servo_RightMotor.write(1000);
+              servo_LeftMotor.writeMicroseconds(1000);
+              servo_RightMotor.writeMicroseconds(1000);
               Serial.println("FUCK YES!!!!!!");
               operationPhase++;
             }
@@ -698,8 +697,8 @@ void loop()
 
           }
           else if (operationPhase == 14) {
-            servo_LeftMotor.write(1000);
-            servo_RightMotor.write(2000);
+            servo_LeftMotor.writeMicroseconds(1000);
+            servo_RightMotor.writeMicroseconds(2000);
           }
 
 
