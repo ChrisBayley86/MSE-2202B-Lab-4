@@ -578,18 +578,26 @@ void loop()
 
           }
           else if (operationPhase == 8) {//Turn and then follow the line to the block
-              while ((TimeTurning == 8 && ((firstEncoderReadRight + 400) >= encoder_RightMotor.getRawPosition()))) {
-                servo_RightMotor.write(1400);
-                servo_LeftMotor.write(1400);
-              }
-              firstEncoderReadLeft = encoder_LeftMotor.getRawPosition();
-              firstEncoderReadRight = encoder_RightMotor.getRawPosition();
-              while ((TimeTurning == 8 && ((firstEncoderReadLeft + 800) >= encoder_RightMotor.getRawPosition()))) {
-                servo_RightMotor.write(1500);
-                servo_LeftMotor.write(1700);
-              }
-              operationPhase++;
-              TimeTurning++;
+
+            Serial.print("Pre: L "); Serial.println(firstEncoderReadLeft);
+            Serial.print("Pre: R "); Serial.println(firstEncoderReadRight);
+            while ((TimeTurning == 8 && ((firstEncoderReadRight - 400) <= encoder_RightMotor.getRawPosition()))) {
+              servo_RightMotor.write(1400);
+              servo_LeftMotor.write(1400);
+              Serial.print("During: L "); Serial.println(firstEncoderReadLeft);
+              Serial.print("During: R "); Serial.println(firstEncoderReadRight);
+              Serial.print("Raw: L "); Serial.println(encoder_LeftMotor.getRawPosition());
+              Serial.print("Raw: R "); Serial.println(encoder_RightMotor.getRawPosition());
+
+            }
+            firstEncoderReadLeft = encoder_LeftMotor.getRawPosition();
+            firstEncoderReadRight = encoder_RightMotor.getRawPosition();
+            while ((TimeTurning == 8 && ((firstEncoderReadLeft + 800) >= encoder_RightMotor.getRawPosition()))) {
+              servo_RightMotor.write(1500);
+              servo_LeftMotor.write(1700);
+            }
+            operationPhase++;
+            TimeTurning++;
 
 
 
